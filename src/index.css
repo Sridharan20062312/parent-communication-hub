@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-teal: #2a9d8f;
+  --primary-navy: #264653;
+  --primary-orange: #f4a261;
+  --primary-cream: #e9c46a;
+  --primary-earth: #e76f51;
+  --text-main: #2d3436;
+  --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+@layer base {
+  body {
+    @apply font-outfit text-[#2d3436] bg-[#f8f9fa] min-h-screen;
+    background: var(--bg-gradient);
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl rounded-2xl;
+  }
+  
+  .btn-teal {
+    @apply bg-[#2a9d8f] text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-[#21867a] active:scale-95 transition-all shadow-md;
+  }
+
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/10 text-white/70 hover:text-white;
+  }
+
+  .nav-item.active {
+    @apply bg-[#2a9d8f]/20 text-[#2a9d8f] border-l-4 border-[#2a9d8f];
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-[#adb5bd]/30 rounded-full hover:bg-[#adb5bd]/50 transition-all;
+}
