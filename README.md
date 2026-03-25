@@ -1,73 +1,44 @@
-# React + TypeScript + Vite
+# 🎓 NAMMA GCE - Parent Communication Hub (Professional React Version)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, professional academic management system for **Government College of Engineering, Erode**, built with **React, TypeScript, Vite, and Tailwind CSS**.
 
-Currently, two official plugins are available:
+## 🚀 Deployment Status
+The project is optimized for **GitHub Pages**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 🔗 Live Link
+[https://Sridharan20062312.github.io/parent-communication-hub/](https://Sridharan20062312.github.io/parent-communication-hub/)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Technology Stack
+- **Framework:** React 19
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS (Custom Institutional Palette)
+- **Icons:** Lucide-React
+- **Animations:** Framer Motion
+- **Persistence:** LocalStorage (Maintains continuity with legacy data)
 
-## Expanding the ESLint configuration
+## 📁 Project Structure
+- **/src/pages**: Contains the core portals (Advisor, Staff, Parent, Student, Admin).
+- **/docs**: Contains the optimized production build for GitHub Pages.
+- **/legacy**: Backup of the original HTML/CSS/JS files for reference.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📖 Features
+1. **Unified Login Portal:** Professional gate for Staff, Students, and Parents.
+2. **Advisor Control Unit:** Manage rosters and send WhatsApp academic updates to parents.
+3. **Faculty Dashboard:** Marks entry with 60/40 weighted auto-calculation.
+4. **Parent Hub:** Visualize ward's performance and message advisors directly.
+5. **Student Portfolio:** High-fidelity academic transcript and performance tracking.
+6. **Admin Oversight:** Account provisioning and directory management.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ⚙️ Development
+To run this project locally:
+1. `npm install`
+2. `npm run dev`
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+To rebuild for deployment:
+1. `npm run build`
+2. Pushes are automatically served from the `/docs` folder on the `main` branch.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+Designed with ❤️ for GCE Erode.
