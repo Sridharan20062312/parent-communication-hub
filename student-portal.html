@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EduConnect - Student Portal Dashboard">
+    <title>Student Portal | CS Department</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Specific overrides for Student Theme (Cyan / Blue base instead of purple) */
+        :root {
+            --accent-primary: #06b6d4;      /* Cyan */
+            --accent-secondary: #3b82f6;    /* Blue */
+            --accent-gradient: linear-gradient(135deg, #06b6d4, #3b82f6);
+        }
+
+        body::before {
+            background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, rgba(15,23,42,0) 70%);
+        }
+
+        body::after {
+            background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(15,23,42,0) 70%);
+        }
+
+        /* Grade Badge for Courses */
+        .grade-badge {
+            background: rgba(26, 146, 106, 0.678);
+            color: var(--success);
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* Task Checkbox Customization */
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .assignment-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .assignment-item.priority-high {
+            border-left: 4px solid #f59e0b; /* Orange warning for due soon */
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.05) 0%, rgba(255,255,255,0.03) 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="main-sidebar">
+            <div class="logo">
+                <span class="icon" aria-hidden="true">👨‍🎓</span>
+                <h1>EduStudent</h1>
+            </div>
+            
+            <nav id="primary-nav">
+                <a href="#" class="nav-item active" id="nav-dashboard"><span class="icon" aria-hidden="true">🖥️</span> Dashboard</a>
+                <a href="#" class="nav-item" id="nav-courses"><span class="icon" aria-hidden="true">📚</span> My Courses</a>
+                <a href="#" class="nav-item" id="nav-assignments"><span class="icon" aria-hidden="true">📝</span> Assignments <span class="badge" style="background: #f59e0b;">2</span></a>
+                <a href="#" class="nav-item" id="nav-schedule"><span class="icon" aria-hidden="true">📅</span> Schedule</a>
+                <a href="#" class="nav-item" id="nav-grades"><span class="icon" aria-hidden="true">🏆</span> Grades</a>
+                <a href="parent-dashboard.html" class="nav-item" style="border-top: 1px solid rgba(255,255,255,0.05); margin-top: 0.5rem; color: #a78bfa;"><span class="icon" aria-hidden="true">👨‍👩‍👦</span> Parent Dashboard</a>
+                <a href="#" class="nav-item" id="nav-logout" style="color: #ef4444; border-top: 1px solid rgba(255,255,255,0.05);"><span class="icon" aria-hidden="true">🚪</span> Log Out</a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="avatar" aria-hidden="true">A</div>
+                <div class="user-info">
+                    <p class="name">Alan Turing</p>
+                    <p class="role">CS Sophomore • ID: 9821</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content" id="main-view">
+            <header id="top-header">
+                <div class="header-left">
+                    <h2>Welcome back, Alan! 🚀</h2>
+                    <p>You have 2 assignments due this week. Keep up the good work.</p>
+                </div>
+                <div class="header-right">
+                    <button class="icon-btn" id="btn-notifications" aria-label="Notifications">
+                        🔔<span class="notification-dot"></span>
+                    </button>
+                    <button class="new-message-btn" id="btn-contact-advisor">Contact Advisor</button>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Academic Announcements (Reusing Announcement classes) -->
+                <section class="card col-span-2 glass-panel" id="section-announcements">
+                    <div class="card-header">
+                        <h3>Upcoming Assignments</h3>
+                        <a href="#" class="view-all">View All Tasks</a>
+                    </div>
+                    <div class="announcement-list">
+                        
+                        <label class="announcement-item priority-high assignment-item" style="cursor: pointer;">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="announcement-content" style="flex: 1;">
+                                <h4>Algorithm Analysis Project</h4>
+                                <p>CS3401 • Implement a self-balancing AVL tree in C++.</p>
+                                <span class="time" style="color: #f59e0b; font-weight: 500;">Due Tomorrow at 11:59 PM</span>
+                            </div>
+                        </label>
+
+                        <label class="announcement-item assignment-item" style="cursor: pointer;">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="announcement-content" style="flex: 1;">
+                                <h4>Probability & Statistics Assignment</h4>
+                                <p>MA3451 • Random Variables and Distributions.</p>
+                                <span class="time">Due Thursday at 9:00 AM</span>
+                            </div>
+                        </label>
+
+                    </div>
+                </section>
+
+                 <!-- Current Semester GPA / Stats Section -->
+                <section class="card glass-panel stat-card" id="section-stats">
+                    <h3>Current GPA</h3>
+                    <div class="stat-circle">
+                        <!-- Using the circular chart for GPA out of 4.0 -->
+                        <svg viewBox="0 0 36 36" class="circular-chart" aria-label="3.8 GPA">
+                            <path class="circle-bg"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                            />
+                            <path class="circle"
+                                stroke-dasharray="90, 100" 
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                            />
+                            <text x="18" y="20.35" class="percentage">3.8</text>
+                        </svg>
+                    </div>
+                    <p class="stat-desc">Excellent standing. You are in the top 10% of your program.</p>
+                </section>
+
+                <!-- Attendance Stat Card -->
+                <section class="card glass-panel stat-card" id="section-attendance-card">
+                    <h3>Attendance</h3>
+                    <div class="stat-circle">
+                         <svg viewBox="0 0 36 36" class="circular-chart" aria-label="92% Attendance">
+                            <path class="circle-bg"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                            />
+                            <path class="circle"
+                                id="att-circle"
+                                stroke-dasharray="0, 100" 
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                                style="stroke: #10b981;"
+                            />
+                            <text x="18" y="20.35" class="percentage" id="att-percentage">0%</text>
+                        </svg>
+                    </div>
+                    <p class="stat-desc" id="att-desc">Waiting for faculty to log session data.</p>
+                </section>
+
+                <!-- Course Overview Section -->
+                <section class="card col-span-2 glass-panel" id="section-courses">
+                    <div class="card-header">
+                        <h3>My Enrolled Courses</h3>
+                        <a href="#" class="view-all">Transcript</a>
+                    </div>
+                    <div class="message-list" id="dynamic-courses-list">
+                        <!-- Dynamic Marks & Subjects -->
+                        <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                            ⏳ Loading academic records from vault...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Class Schedule Today Section -->
+                <section class="card glass-panel" id="section-events">
+                    <div class="card-header">
+                        <h3>Today's Schedule</h3>
+                        <a href="#" class="view-all">Full Week</a>
+                    </div>
+                    <div class="event-list">
+                        <div class="event-item">
+                            <div class="event-date" style="width: 65px; background: rgba(6,182,212,0.15); color: var(--accent-primary);">
+                                <span class="month" style="font-size: 0.75rem;">10:00</span>
+                                <span class="day" style="font-size: 1rem;">AM</span>
+                            </div>
+                            <div class="event-details">
+                                <h4>Algorithm Analysis Lecture</h4>
+                                <p>Turing Hall • Rm 104</p>
+                            </div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-date" style="width: 65px; background: rgba(6,182,212,0.15); color: var(--accent-primary);">
+                                <span class="month" style="font-size: 0.75rem;">03:00</span>
+                                <span class="day" style="font-size: 1rem;">PM</span>
+                            </div>
+                            <div class="event-details">
+                                <h4>Algorithm Analysis Lab</h4>
+                                <p>Tech Center • Lab 3</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Detailed Attendance History -->
+                <section class="card col-span-3 glass-panel" id="section-attendance-history">
+                    <div class="card-header">
+                        <h3>Detailed Attendance History</h3>
+                        <a href="#" class="view-all">Full Report</a>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                        <thead>
+                            <tr style="text-align: left; color: var(--text-secondary); font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <th style="padding: 1rem;">Date</th>
+                                <th style="padding: 1rem;">Subject</th>
+                                <th style="padding: 1rem;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="att-history-list">
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </section>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        function getGrade(total) {
+            const t = parseInt(total);
+            if (isNaN(t) || t === 0) return "UA";
+            if (t >= 91) return "O";
+            if (t >= 81) return "A+";
+            if (t >= 71) return "A";
+            if (t >= 61) return "B+";
+            if (t >= 50) return "B";
+            return "U";
+        }
+
+        // Ensure student session is active for parent dashboard if accessed via student login
+        document.getElementById('nav-dashboard').parentElement.addEventListener('click', (e) => {
+            if (e.target.innerText.includes('Parent Dashboard')) {
+                const sessionReg = localStorage.getItem('studentSessionRegNo');
+                localStorage.setItem('parentSessionRegNo', sessionReg);
+            }
+        });
+
+        // Logout Logic
+        document.getElementById('nav-logout').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('Are you sure you want to log out of the NAMMA GCE Student Portal?')) {
+                localStorage.removeItem('studentSessionRegNo');
+                localStorage.removeItem('parentSessionRegNo'); // Clear both just in case
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Dynamic Greeting and Info
+        window.onload = function() {
+            const sessionReg = localStorage.getItem('studentSessionRegNo');
+            if (!sessionReg) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const enrollments = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            
+            // Match student by Reg Number or Roll Number (case insensitive)
+            const student = enrollments.find(s => 
+                (s.regNo && s.regNo.trim().toUpperCase() === sessionReg.trim().toUpperCase()) ||
+                (s.rollNo && s.rollNo.trim().toUpperCase() === sessionReg.trim().toUpperCase())
+            );
+            
+            if (student) {
+                document.querySelector('.header-left h2').textContent = `Welcome back, ${student.fullName.split(' ')[0]}! 🚀`;
+                document.querySelector('.user-info .name').textContent = student.fullName;
+                document.querySelector('.user-info .role').textContent = `Student • ID: ${student.regNo}`;
+                document.querySelector('.user-profile .avatar').textContent = student.fullName.charAt(0);
+                
+                // LOAD MARKS DYNAMICALLY 🚀
+                const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+                const courseList = document.getElementById('dynamic-courses-list');
+                const roll = student.rollNo.trim().toUpperCase();
+
+                if (markRecords[roll] && Object.keys(markRecords[roll]).length > 0) {
+                    courseList.innerHTML = '';
+                    Object.keys(markRecords[roll]).forEach(subject => {
+                        const data = markRecords[roll][subject];
+                        const grade = getGrade(data.total);
+                        const icon = subject.includes('Algorithm') ? '💻' : (subject.includes('DBMS') ? '🗄️' : '📚');
+                        
+                        courseList.innerHTML += `
+                            <div class="message-item">
+                                <div class="message-avatar" aria-hidden="true" style="background: rgba(6, 182, 212, 0.1); color: var(--accent-primary); border: 1px solid rgba(6, 182, 212, 0.3);">${icon}</div>
+                                <div class="message-content" style="width: 100%;">
+                                    <div class="message-top">
+                                        <h4>${subject}</h4>
+                                        <span class="grade-badge">${grade}</span>
+                                    </div>
+                                    <p>Mark Distribution: <b style="color: #10b981;">Internal: ${data.internal}</b> | <b style="color: var(--accent-secondary);">Assignment: ${data.lab}</b> • Total: ${data.total}/100</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    courseList.innerHTML = '<p style="padding: 2rem; color: #f59e0b; text-align: center;">📋 Marks for the current assessment cycle have not been published by your Subject In-charge yet.</p>';
+                }
+
+                // Update Overview Circle (e.g. Total Average)
+                const studentMarks = markRecords[roll] ? Object.values(markRecords[roll]) : [];
+                if (studentMarks.length > 0) {
+                    const totalAvg = (studentMarks.reduce((sum, m) => sum + parseInt(m.total), 0) / studentMarks.length).toFixed(1);
+                    document.querySelector('.percentage').textContent = totalAvg;
+                    document.querySelector('.stat-desc').textContent = `Average Score across all registered subjects: ${totalAvg}%`;
+                }
+
+                // LOAD ATTENDANCE DYNAMICALLY 📅
+                const attRecords = JSON.parse(localStorage.getItem('staffAttendanceRecords') || '[]');
+                const studentAtt = attRecords.filter(r => r.roll === roll);
+                const attList = document.getElementById('att-history-list');
+
+                if (studentAtt.length > 0) {
+                    attList.innerHTML = '';
+                    const presentCount = studentAtt.filter(r => r.status === 'full').length + (studentAtt.filter(r => r.status === 'half').length * 0.5);
+                    const avgAtt = ((presentCount / studentAtt.length) * 100).toFixed(1);
+                    
+                    document.getElementById('att-percentage').textContent = `${avgAtt}%`;
+                    document.getElementById('att-circle').style.strokeDasharray = `${avgAtt}, 100`;
+                    document.getElementById('att-desc').textContent = `You have attended ${presentCount} out of ${studentAtt.length} sessions.`;
+
+                    studentAtt.reverse().forEach(record => {
+                        const isPresent = record.status === 'full' || record.status === 'half';
+                        const color = isPresent ? '#10b981' : '#ef4444';
+                        const statusText = record.status === 'full' ? 'Full Day' : (record.status === 'half' ? 'Half Day' : 'Absent');
+                        
+                        attList.innerHTML += `
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+                                <td style="padding: 1rem; font-size: 0.9rem;">${record.date}</td>
+                                <td style="padding: 1rem; font-weight: 600;">${record.subject}</td>
+                                <td style="padding: 1rem;">
+                                    <span style="background: ${color}15; color: ${color}; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
+                                        ${isPresent ? '✅' : '❌'} ${statusText}
+                                    </span>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    attList.innerHTML = '<tr><td colspan="3" style="padding: 2rem; text-align: center; color: var(--text-secondary);">Faculty members are currently finalizing session logs.</td></tr>';
+                }
+
+            } else {
+                // Not in roster, but allow access with generic name or force logout
+                document.querySelector('.header-left h2').textContent = `Welcome, Student! 👋`;
+                document.querySelector('.user-info .name').textContent = "Guest Student";
+                document.querySelector('.user-info .role').textContent = `ID: ${sessionReg}`;
+            }
+        }
+    </script>
+</body>
+</html>

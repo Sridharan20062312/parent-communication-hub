@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EduConnect - My Students Directory">
+    <title>My Students | Advisor Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        .search-bar {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .search-bar:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0 1.5rem;
+            border-radius: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--accent-primary);
+        }
+
+        /* Student Grid Directory */
+        .directory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .student-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .student-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar-lg {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .student-details h3 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .student-details p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .meta-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .meta-label {
+            color: var(--text-secondary);
+        }
+
+        .meta-val {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .badge-software { background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .badge-cyber { background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .badge-data { background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+
+        .card-actions {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-view {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+        }
+        
+        .btn-view:hover {
+            background: rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-msg {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-msg:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* PDF Source Distinction */
+        .student-card.pdf-source {
+            border: 1px dashed rgba(236, 72, 153, 0.4);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(236, 72, 153, 0.05));
+        }
+
+        .badge-pdf {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(236, 72, 153, 0.2);
+            color: #f472b6;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-pdf::before {
+            content: '📄';
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="main-sidebar">
+            <div class="logo">
+                <span class="icon" aria-hidden="true">🧭</span>
+                <h1>Advising Hub</h1>
+            </div>
+            
+            <nav id="primary-nav">
+                <a href="advisor-portal.html" class="nav-item"><span class="icon" aria-hidden="true">📊</span> ADD STUDENTS</a>
+                <a href="my-students.html" class="nav-item active"><span class="icon" aria-hidden="true">👨‍🎓</span> My Students</a>
+                <a href="enrollments.html" class="nav-item"><span class="icon" aria-hidden="true">📝</span> Enrollments</a>
+                <a href="staff-dashboard.html" class="nav-item"><span class="icon" aria-hidden="true">📅</span> Attendance</a>
+                <a href="staff-dashboard.html" class="nav-item"><span class="icon" aria-hidden="true">📝</span> Manage Marks</a>
+                <a href="#" class="nav-item"><span class="icon" aria-hidden="true">📅</span> Appointments <span class="badge">4</span></a>
+                <a href="#" class="nav-item"><span class="icon" aria-hidden="true">⚙️</span> Settings</a>
+                <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <a href="#" onclick="localStorage.removeItem('currentUser'); window.location.href='login.html';" class="nav-item logout-link" style="color: #ff4d6d; font-weight: 600;"><span class="icon" aria-hidden="true">🚪</span> Log Out</a>
+                </div>
+            </nav>
+
+            <div class="user-profile">
+                <div class="avatar" aria-hidden="true">👨‍🏫</div>
+                <div class="user-info">
+                    <p class="name">Dr. Peterson</p>
+                    <p class="role">CS Academic Advisor</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content" id="main-view">
+            <header id="top-header">
+                <div class="header-left">
+                    <h2>Student Directory</h2>
+                    <p>Search, filter, and view the 142 students in your roster.</p>
+                </div>
+                <div class="header-right">
+                    <button class="new-message-btn" onclick="window.location.href='advisor-portal.html'">+ Enroll New Student</button>
+                </div>
+            </header>
+
+            <!-- Search and Filter Bar -->
+            <div class="search-container glass-panel" style="padding: 1rem; border-radius: 16px;">
+                <input type="text" class="search-bar" placeholder="🔍  Search by name, ID, or email..." id="student-search">
+                <button class="filter-btn">
+                    <span>⚙️ Filters</span>
+                </button>
+                <button class="filter-btn">
+                    <span>⬇️ Export Roster</span>
+                </button>
+            </div>
+
+            <!-- Student Grid -->
+            <!-- Student Grid -->
+            <div class="directory-grid" id="directory-grid">
+                
+                <!-- Empty Student List Placeholder -->
+                <div id="empty-directory-msg" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: rgba(15, 23, 42, 0.4); border: 2px dashed rgba(99, 102, 241, 0.2); border-radius: 16px; margin-top: 1rem;">
+                    <span style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.8;">👨‍🎓</span>
+                    <h3 style="color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.2rem;">Your directory is empty</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">No students exist in your roster yet. Enrolling a new student will automatically add them here.</p>
+                    <button class="submit-btn" style="width: auto; margin-top: 0; padding: 0.8rem 1.5rem;" onclick="window.location.href='advisor-portal.html'">+ Enroll First Student</button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Load dynamically generated students into the grid
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            const grid = document.getElementById('directory-grid');
+            const emptyMsg = document.getElementById('empty-directory-msg');
+            
+            if (saved.length > 0) {
+                if (emptyMsg) emptyMsg.style.display = 'none';
+                
+                // Sort students by Roll Number naturally (handles 24CSE01, 24CSE02, etc.)
+                const sorted = saved.sort((a, b) => {
+                    return a.rollNo.localeCompare(b.rollNo, undefined, {numeric: true, sensitivity: 'base'});
+                });
+
+                sorted.forEach((student, index) => {
+                    const nameParts = student.fullName.split(' ');
+                    const initials = (nameParts[0].charAt(0) + (nameParts.length > 1 ? nameParts[1].charAt(0) : '')).toUpperCase();
+                    
+                    // Add some random colors for avatars
+                    const colors = [
+                        {bg: 'rgba(99, 102, 241, 0.15)', text: '#818cf8'},
+                        {bg: 'rgba(16, 185, 129, 0.15)', text: '#34d399'},
+                        {bg: 'rgba(245, 158, 11, 0.15)', text: '#fbbf24'},
+                        {bg: 'rgba(236, 72, 153, 0.15)', text: '#ec4899'}
+                    ];
+                    const color = colors[index % colors.length];
+
+                    const card = document.createElement('div');
+                    card.className = 'student-card';
+                    
+                    // Check if student was enrolled via PDF
+                    const isPdfSource = student.fullName.includes('(PDF)');
+                    if (isPdfSource) {
+                        card.classList.add('pdf-source');
+                    }
+
+                    card.innerHTML = `
+                        ${isPdfSource ? '<div class="badge-pdf">PDF Extract</div>' : ''}
+                        <div class="student-card-header">
+                            <div class="avatar-lg" style="background: ${color.bg}; color: ${color.text};">${initials}</div>
+                            <div class="student-details">
+                                <h3>${student.fullName}</h3>
+                                <p>Reg No: ${student.regNo}</p>
+                            </div>
+                        </div>
+                        <div class="card-meta">
+                            <div class="meta-row">
+                                <span class="meta-label">Roll No</span>
+                                <span class="badge-software">${student.rollNo}</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-label">Email ID</span>
+                                <span class="meta-val" style="color: var(--success); font-size: 0.8rem;">${student.email}</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-label">Profile / Portfolio Link</span>
+                                <a href="${student.link}" target="_blank" style="color: var(--accent-primary); font-size: 0.85rem; font-weight: 500; text-decoration: underline;">View Profile 🔗</a>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn btn-view" onclick="window.location.href='student-profile.html?reg=${student.regNo}'">View Profile</button>
+                            <button class="action-btn btn-msg">Message</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            // --- SEARCH LOGIC ---
+            const searchInput = document.getElementById('student-search');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.student-card');
+                let foundMatch = false;
+
+                cards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        card.style.display = 'block';
+                        foundMatch = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                if (emptyMsg) {
+                    emptyMsg.style.display = (!foundMatch && saved.length > 0) ? 'block' : 'none';
+                    if (!foundMatch && saved.length > 0) {
+                        emptyMsg.innerHTML = `<span style="font-size: 2rem;">🔍</span><h3>No results for "${e.target.value}"</h3><p>Try searching by a different name or roll number.</p>`;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

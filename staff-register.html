@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Registration | NAMMA GCE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .register-container {
+            width: 100%;
+            max-width: 450px;
+            background: #111;
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            color: #777;
+            font-size: 0.85rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            color: #eee;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: #fff;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-teal);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        .submit-btn:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #777;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        .back-link:hover { color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="header">
+            <h1>➕ Register New Faculty</h1>
+            <p>Government College of Engineering, Erode</p>
+        </div>
+        <form id="registration-form">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="reg-name" placeholder="E.g. Dr. Peterson" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="reg-password" placeholder="Create Secure Password" required>
+            </div>
+            <div class="form-group">
+                <label>Institutional Role</label>
+                <select id="reg-role" onchange="toggleSubject()">
+                    <option value="staff">Teaching Staff (Faculty)</option>
+                    <option value="advisor">Academic Advisor</option>
+                </select>
+            </div>
+            <div class="form-group" id="subject-group">
+                <label>Assigned Subject (Staff Only)</label>
+                <input type="text" id="reg-subject" placeholder="E.g. TOC (CS3452)">
+            </div>
+            <button type="submit" class="submit-btn" id="reg-submit">Finalize Registration</button>
+            <a href="login.html" class="back-link">← Cancel and Back to Login</a>
+        </form>
+    </div>
+
+    <script>
+        function toggleSubject() {
+            const role = document.getElementById('reg-role').value;
+            const sub = document.getElementById('subject-group');
+            sub.style.display = role === 'staff' ? 'block' : 'none';
+        }
+
+        document.getElementById('registration-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const role = document.getElementById('reg-role').value;
+            const subject = document.getElementById('reg-subject').value;
+            const submitBtn = document.getElementById('reg-submit');
+
+            if (role === 'staff') {
+                const staffList = JSON.parse(localStorage.getItem('nammaGCE_StaffList') || '[]');
+                staffList.push({ name, password, subject });
+                localStorage.setItem('nammaGCE_StaffList', JSON.stringify(staffList));
+            } else {
+                const advisorList = JSON.parse(localStorage.getItem('nammaGCE_AdvisorList') || '[]');
+                advisorList.push({ name, password });
+                localStorage.setItem('nammaGCE_AdvisorList', JSON.stringify(advisorList));
+            }
+
+            submitBtn.textContent = 'Account Created! ✅';
+            submitBtn.style.background = '#059669';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Progress | NAMMA GCE</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent-parent: #a78bfa;
+            --bg-dark: #020617;
+            --panel-bg: rgba(15, 23, 42, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Branding */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-shield { font-size: 2.5rem; }
+        .logo-text h1 { margin: 0; font-size: 1.4rem; letter-spacing: 0.05em; }
+        .logo-text p { margin: 0; font-size: 0.7rem; color: var(--accent-parent); text-transform: uppercase; font-weight: 700; }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .student-avatar {
+            width: 100px;
+            height: 100px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .student-info h2 { margin: 0; font-size: 2rem; margin-bottom: 0.5rem; }
+        .student-info p { margin: 0; color: var(--text-secondary); font-size: 1rem; display: flex; gap: 1rem; }
+        .student-info span { color: var(--text-primary); font-weight: 600; }
+
+        .attendance-stat {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .attendance-stat .val { display: block; font-size: 1.8rem; font-weight: 700; color: #10b981; }
+        .attendance-stat .lbl { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* Performance View */
+        .performance-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .section-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .section-card h3 { 
+            margin-top: 0; 
+            margin-bottom: 2rem; 
+            font-size: 1.25rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.8rem; 
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th { text-align: left; padding: 1rem; color: var(--text-secondary); font-weight: 500; font-size: 0.9rem; }
+        td { padding: 1.2rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+        .mark-pill {
+            display: inline-block;
+            background: rgba(255,255,255,0.05);
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .badge-present { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .badge-absent { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover { background: #ef4444; color: white; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-section">
+                <span class="logo-shield">🛡️</span>
+                <div class="logo-text">
+                    <h1>NAMMA GCE</h1>
+                    <p>Academic Resource Portal</p>
+                </div>
+            </div>
+            <a href="#" onclick="localStorage.removeItem('parentSessionRegNo'); window.location.href='login.html';" class="btn-logout">🚪 Log Out</a>
+        </header>
+
+        <!-- Student Profile Row -->
+        <main>
+            <section class="profile-card">
+                <div class="student-avatar" style="border-radius: 20px; font-weight: 800; color: var(--accent-parent);">AT</div>
+                <div class="student-info">
+                    <h2 id="student-name">Loading...</h2>
+                    <div style="display: flex; gap: 1.5rem; margin-top: 0.8rem;">
+                        <p>ID: <span id="reg-no" style="color: var(--accent-parent); font-family: monospace; letter-spacing: 1px;">--</span></p>
+                        <p>ROLL: <span id="roll-no" style="font-weight: 800;">--</span></p>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: rgba(99, 102, 241, 0.1); color: #818cf8; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">Semester VI</span>
+                        <span style="background: rgba(16, 185, 129, 0.1); color: #34d399; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">Section: CS-A</span>
+                    </div>
+                </div>
+                <div class="attendance-stat">
+                    <span class="val">92.4%</span>
+                    <span class="lbl">Total Attendance</span>
+                </div>
+            </section>
+
+            <div class="performance-grid">
+                <!-- Direct Notices from Advisor -->
+                <section id="advisor-notices-card" class="section-card" style="display: none; border: 1px solid rgba(99, 102, 241, 0.3); background: rgba(99, 102, 241, 0.05);">
+                    <h3 style="color: #818cf8; border-bottom-color: rgba(99, 102, 241, 0.2);">📢 Official Notices from Institutional Advisor</h3>
+                    <div id="advisor-messages-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Filled by JS -->
+                    </div>
+                </section>
+
+                <!-- Subject-Wise Attendance Breakdown -->
+                <section class="section-card">
+                    <h3>📈 Subject Attendance Breakdown</h3>
+                    <div id="subject-att-breakdown" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <!-- Filled by JS -->
+                    </div>
+                </section>
+
+                <!-- Marks Summary -->
+                <section class="section-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0; border: none; padding: 0;">📊 Academic Mark Sheet (Internal Assessment)</h3>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <button onclick="downloadMarksExcel()" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'">
+                                📥 Download Excel
+                            </button>
+                            <div id="mark-identifier-badge" style="font-size: 0.8rem; background: rgba(245, 158, 11, 0.1); color: var(--accent-parent); padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 700; border: 1px solid rgba(245, 158, 11, 0.2);">
+                                ROLL: <span id="badge-roll">--</span> | REG: <span id="badge-reg">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Subject name</th>
+                                <th style="color: var(--accent-parent);">Internal (60)</th>
+                                <th style="color: var(--accent-parent);">Assignment (40)</th>
+                                <th>Performance Analysis</th>
+                                <th>Total (100)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marks-table-body">
+                            <!-- Dynamically filled by JS -->
+                            <tr id="marks-loading-row">
+                                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                    ⏳ Loading academic records from staff portal...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Attendance History -->
+                <section class="section-card">
+                    <h3>📅 Recent Session History</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Assigned Subject</th>
+                                <th>Faculty</th>
+                                <th>Session Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-history-body">
+                            <!-- Filled by JS -->
+                            <tr>
+                                <td style="color: var(--text-secondary);">19-03-2026</td>
+                                <td style="font-weight: 600;">Environmental Science (GE3451)</td>
+                                <td>Prof. Gayathri</td>
+                                <td><span class="status-badge badge-present">✅ Full Day Present</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Remark to Advisor Section -->
+                <section class="section-card" style="border: 1px solid var(--accent-parent);">
+                    <h3>📝 Submit Remark to Advisor</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">This message is private and will only be visible to the Institutional Advisor.</p>
+                    <textarea id="advisor-note" style="width: 100%; height: 100px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px; color: white; padding: 1rem; box-sizing: border-box; resize: none;" placeholder="Enter your message here (e.g., Leave request, Academic support, Issue reports)..."></textarea>
+                    <button onclick="submitRemark()" style="margin-top: 1rem; background: var(--accent-parent); color: var(--bg-dark); font-weight: 700; padding: 0.8rem 1.5rem; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">📤 Send to Advisor</button>
+                    <p id="remark-status" style="margin-top: 0.8rem; font-size: 0.8rem; display: none;"></p>
+                </section>
+            </div>
+        </main>
+    </div>
+    <script>
+        window.onload = function() {
+            // AUTH & IDENTIFICATION 🔑
+            const sessionReg = localStorage.getItem('parentSessionRegNo') || '731124104001';
+            const allStudents = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            
+            // Search for student in database (Case insensitive, check both Reg and Roll)
+            const studentEntry = allStudents.find(s => 
+                (s.regNo && s.regNo.trim().toUpperCase() === sessionReg.trim().toUpperCase()) ||
+                (s.rollNo && s.rollNo.trim().toUpperCase() === sessionReg.trim().toUpperCase())
+            );
+
+            const profileCard = document.querySelector('.profile-card');
+            const performanceGrid = document.querySelector('.performance-grid');
+
+            if (!studentEntry) {
+                // Handle Profile Not Found state with a more helpful UI
+                document.getElementById('student-name').textContent = "Profile Not Linked";
+                document.getElementById('reg-no').textContent = sessionReg.toUpperCase();
+                document.getElementById('roll-no').textContent = "Unknown";
+                document.querySelector('.student-avatar').textContent = "❓";
+                document.querySelector('.student-avatar').style.color = "#ef4444";
+                
+                const warningBox = document.createElement('div');
+                warningBox.style.cssText = "background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 2rem; border-radius: 20px; text-align: center; margin-bottom: 2rem;";
+                warningBox.innerHTML = `
+                    <h3 style="color: #ef4444; margin-bottom: 0.5rem;">🚨 Account Linking Required</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">The User ID "<b>${sessionReg}</b>" is not in the official enrollment list.<br><br>
+                    <b>To view marks:</b> Please log out and sign in using your child's <b>Registration Number</b> or <b>Roll Number</b> which was registered in the Advisor Portal.</p>
+                `;
+                performanceGrid.prepend(warningBox);
+                return; 
+            }
+
+            // Update Profile Header with matched student data
+            document.getElementById('student-name').textContent = studentEntry.fullName;
+            document.getElementById('reg-no').textContent = studentEntry.regNo;
+            document.getElementById('roll-no').textContent = studentEntry.rollNo;
+            document.querySelector('.student-avatar').textContent = studentEntry.fullName.charAt(0) + (studentEntry.fullName.split(' ').length > 1 ? studentEntry.fullName.split(' ')[1].charAt(0) : '');
+            document.querySelector('.student-avatar').style.color = "var(--accent-parent)";
+
+            const myRoll = studentEntry.rollNo.trim().toUpperCase();
+            const myReg = studentEntry.regNo.trim().toUpperCase();
+            
+            // LOAD ADVISOR MESSAGES
+            loadAdvisorMessages(myReg);
+            
+            // Update the Mark Sheet identifier section
+            document.getElementById('badge-roll').textContent = myRoll;
+            document.getElementById('badge-reg').textContent = myReg;
+
+            // LOAD MARKS DYNAMICALLY 🚀
+            const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            const markTableBody = document.getElementById('marks-table-body');
+            
+            if (markRecords[myRoll] && Object.keys(markRecords[myRoll]).length > 0) {
+                const myMarks = markRecords[myRoll];
+                markTableBody.innerHTML = ''; // Clear loading row
+
+                Object.keys(myMarks).forEach(subject => {
+                    const data = myMarks[subject];
+                    const percentage = (data.total / 100) * 100;
+                    const color = percentage >= 80 ? '#10b981' : (percentage >= 60 ? '#f59e0b' : '#ef4444');
+                    
+                    markTableBody.innerHTML += `
+                        <tr>
+                            <td style="font-weight: 700;">${subject}</td>
+                            <td><span class="mark-pill">${data.internal}</span></td>
+                            <td><span class="mark-pill">${data.lab}</span></td>
+                            <td>
+                                <div style="width: 150px; background: rgba(255,255,255,0.05); height: 8px; border-radius: 10px; overflow: hidden;">
+                                    <div style="width: ${percentage}%; background: ${color}; height: 100%;"></div>
+                                </div>
+                            </td>
+                            <td><span class="mark-pill" style="color: ${color}; font-size: 1rem; font-weight: 800;">${data.total} / 100</span></td>
+                        </tr>
+                    `;
+                });
+            } else {
+                markTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #f59e0b;">📋 No marks submitted by staff yet. Marks will appear here once faculty enters them.</td></tr>';
+            }
+
+            // LOAD ATTENDANCE BRREAKDOWN 📈
+            const attRecordsFull = JSON.parse(localStorage.getItem('staffAttendanceRecords') || '[]');
+            const studentAttFull = attRecordsFull.filter(r => r.roll === myRoll);
+            const breakdownContainer = document.getElementById('subject-att-breakdown');
+            
+            if (studentAttFull.length > 0) {
+                breakdownContainer.innerHTML = '';
+                const subjectStats = {};
+                
+                studentAttFull.forEach(r => {
+                    if(!subjectStats[r.subject]) subjectStats[r.subject] = { present: 0, total: 0 };
+                    subjectStats[r.subject].total++;
+                    if(r.status === 'full') subjectStats[r.subject].present += 1;
+                    if(r.status === 'half') subjectStats[r.subject].present += 0.5;
+                });
+
+                Object.keys(subjectStats).forEach(subj => {
+                    const stats = subjectStats[subj];
+                    const per = ((stats.present / stats.total) * 100).toFixed(0);
+                    
+                    breakdownContainer.innerHTML += `
+                        <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); text-align: center;">
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">${subj}</p>
+                            <h4 style="margin: 0.5rem 0; font-size: 1.8rem; color: var(--accent-parent);">${per}%</h4>
+                            <div style="width: 100%; background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; overflow: hidden; margin-top: 1rem;">
+                                <div style="width: ${per}%; background: var(--accent-parent); height: 100%;"></div>
+                            </div>
+                            <p style="margin-top: 0.8rem; font-size: 0.7rem; color: var(--text-secondary);">${stats.present} / ${stats.total} Sessions Attended</p>
+                        </div>
+                    `;
+                });
+            } else {
+                breakdownContainer.innerHTML = '<p style="color: var(--text-secondary);">Waiting for faculty to log session data...</p>';
+            }
+
+            // LOAD ATTENDANCE HISTORY DYNAMICALLY 📅
+            const attRecords = JSON.parse(localStorage.getItem('staffAttendanceRecords') || '[]');
+            const studentAtt = attRecords.filter(r => r.roll === myRoll);
+            
+            if (studentAtt.length > 0) {
+                const attTableBody = document.querySelector('.section-card:last-of-type tbody');
+                attTableBody.innerHTML = ''; // Clear default
+
+                studentAtt.reverse().forEach(record => {
+                    const isPresent = record.status === 'full' || record.status === 'half';
+                    const badgeClass = isPresent ? 'badge-present' : 'badge-absent';
+                    const statusText = record.status === 'full' ? 'Full Day Present' : (record.status === 'half' ? 'Half Day Present' : 'Absent');
+
+                    attTableBody.innerHTML += `
+                        <tr>
+                            <td style="color: var(--text-secondary);">${record.date}</td>
+                            <td style="font-weight: 600;">${record.subject}</td>
+                            <td>Academic Staff</td>
+                            <td><span class="status-badge ${badgeClass}">${isPresent ? '✅' : '❌'} ${statusText}</span></td>
+                        </tr>
+                    `;
+                });
+
+                // Update Overview %
+                const presentCount = studentAtt.filter(r => r.status === 'full').length + (studentAtt.filter(r => r.status === 'half').length * 0.5);
+                const avgPercentage = ((presentCount / studentAtt.length) * 100).toFixed(1);
+                document.querySelector('.attendance-stat .val').textContent = avgPercentage + '%';
+            }
+        };
+
+        function downloadMarksExcel() {
+            const myRoll = document.getElementById('roll-no').textContent;
+            const myName = document.getElementById('student-name').textContent;
+            const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            const myMarks = markRecords[myRoll];
+
+            if (!myMarks || Object.keys(myMarks).length === 0) {
+                alert('No academic records available to download yet.');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += `Student Report: ${myName} (${myRoll})\n`;
+            csvContent += "Subject,Internal (60),Assignment (40),Total (100)\n";
+
+            Object.keys(myMarks).forEach(subj => {
+                const d = myMarks[subj];
+                csvContent += `${subj},${d.internal},${d.lab},${d.total}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Marksheet_${myRoll}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function submitRemark() {
+            const noteArea = document.getElementById('advisor-note');
+            const status = document.getElementById('remark-status');
+            const message = noteArea.value.trim();
+            const myName = document.getElementById('student-name').textContent;
+            const myRoll = document.getElementById('roll-no').textContent;
+
+            if (!message) {
+                status.style.display = 'block';
+                status.style.color = '#ef4444';
+                status.textContent = '❌ Please enter a message first.';
+                return;
+            }
+
+            const newRemark = {
+                student: myName,
+                roll: myRoll,
+                message: message,
+                timestamp: new Date().toLocaleString(),
+                unread: true
+            };
+
+            let remarks = JSON.parse(localStorage.getItem('nammaGCE_ParentMessages') || '[]');
+            remarks.push(newRemark);
+            localStorage.setItem('nammaGCE_ParentMessages', JSON.stringify(remarks));
+
+            noteArea.value = '';
+            status.style.display = 'block';
+            status.style.color = '#10b981';
+            status.textContent = '✅ Message safely delivered to the Institutional Advisor’s dashboard.';
+        }
+
+        // LOAD ADVISOR MESSAGES DYNAMICALLY 📢
+        function loadAdvisorMessages(myReg) {
+            const allMessages = JSON.parse(localStorage.getItem('nammaGCE_AdvisorMessages') || '[]');
+            const myMessages = allMessages.filter(m => m.regNo === myReg);
+            const container = document.getElementById('advisor-notices-card');
+            const list = document.getElementById('advisor-messages-list');
+
+            if (myMessages.length > 0) {
+                container.style.display = 'block';
+                list.innerHTML = '';
+                
+                myMessages.reverse().forEach(msg => {
+                    list.innerHTML += `
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 1.2rem; border-radius: 12px; position: relative;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.8rem; color: #818cf8; font-weight: 600;">
+                                <span>👨‍🏫 ${msg.from}</span>
+                                <span>${msg.timestamp}</span>
+                            </div>
+                            <p style="color: var(--text-primary); line-height: 1.6; margin: 0;">${msg.text}</p>
+                        </div>
+                    `;
+                });
+            }
+        }
+    </script>
+</body>
+</html>

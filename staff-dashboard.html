@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard | Smart Class Advisor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --accent-staff: #10b981;
+            --accent-gradient-staff: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .staff-sidebar {
+            background: rgba(6, 78, 59, 0.4);
+            border-right: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .staff-active {
+            border-left: 4px solid var(--accent-staff) !important;
+            background: rgba(16, 185, 129, 0.1) !important;
+            color: white !important;
+        }
+
+        .data-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-staff);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-staff);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .attendance-opt {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            transition: background 0.2s;
+        }
+
+        .opt-label:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        input[type="radio"]:checked + span {
+            color: var(--accent-staff);
+            font-weight: 700;
+        }
+
+        .mark-input {
+            width: 80px;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: white;
+            text-align: center;
+        }
+
+        .btn-save {
+            background: var(--accent-gradient-staff);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar staff-sidebar">
+            <div class="logo">
+                <span class="icon">🛡️</span>
+                <div class="logo-text">
+                    <h1 style="background: var(--accent-gradient-staff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">NAMMA GCE</h1>
+                    <p style="color: #94a3b8; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin: 0;">Govt. College of Engineering</p>
+                </div>
+            </div>
+            
+            <nav id="primary-nav">
+                <a href="#" class="nav-item staff-active" onclick="showTab('attendance')"><span class="icon">📅</span> Attendance</a>
+                <a href="#" class="nav-item" onclick="showTab('marks')"><span class="icon">📝</span> Manage Marks</a>
+                <a href="my-students.html" class="nav-item"><span class="icon">👨‍🎓</span> Students Info</a>
+                <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <a href="#" onclick="localStorage.removeItem('currentUser'); window.location.href='login.html';" class="nav-item logout-link" style="color: #ff4d6d; font-weight: 600;"><span class="icon">🚪</span> Log Out</a>
+                </div>
+            </nav>
+
+            <div class="user-profile">
+                <div class="avatar" style="background: var(--accent-gradient-staff); overflow: hidden;" id="staff-avatar">👩‍🏫</div>
+                <div class="user-info">
+                    <p class="name" id="staff-name-display">Staff Instructor</p>
+                    <p class="role">Subject Expert</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <div class="header-left">
+                    <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                        <h2 id="page-title" style="margin: 0;">Daily Attendance</h2>
+                        <span id="subject-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-staff); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.2);">📖 Algorithm Analysis (CS3401)</span>
+                    </div>
+                    <p id="page-desc">Record student presence for the assigned subject session.</p>
+                </div>
+                <div class="header-right">
+                    <input type="date" id="att-date" class="mark-input" style="width: 180px; text-align: left;" min="2026-01-01" max="2026-12-31">
+                </div>
+            </header>
+
+            <!-- Attendance Tab -->
+            <div id="tab-attendance" class="data-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3>Student Roster</h3>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">Batch: 2026 CS-A</div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Roll Number</th>
+                            <th>Attendance Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendance-roster">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+                <button class="btn-save" onclick="saveAttendance()">Save Attendance Records</button>
+            </div>
+
+            <!-- Marks Tab (Hidden by default) -->
+            <div id="tab-marks" class="data-card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div>
+                        <h3>Academic Performance</h3>
+                        <select id="subject-selector" class="mark-input" style="width: 200px; margin-top: 0.5rem; text-align: left;" onchange="updateSubjectBadge()">
+                             <option value="Algorithm Analysis (CS3401)">Algorithm Analysis (CS3401)</option>
+                            <option value="Database Management (CS3401)">Database Management (CS3401)</option>
+                            <option value="Theory of Computation (CS3452)">Theory of Computation (CS3452)</option>
+                            <option value="Operating Systems (CS3451)">Operating Systems (CS3451)</option>
+                            <option value="Environmental Science (GE3451)">Environmental Science (GE3451)</option>
+                            <option value="AI & Machine Learning (CS3491)">AI & Machine Learning (CS3491)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Marks Sub-Tabs -->
+                <div class="tab-nav" style="border-bottom: none; gap: 2rem; margin-bottom: 1.5rem;">
+                    <button class="tab-btn active" id="btn-manual-marks" onclick="showMarkSubTab('manual')">Manual Entry</button>
+                    <button class="tab-btn" id="btn-excel-marks" onclick="showMarkSubTab('excel')">Excel Upload</button>
+                    <button class="tab-btn" id="btn-pdf-marks" onclick="showMarkSubTab('pdf')">PDF Form</button>
+                </div>
+
+                <!-- Manual Entry Content -->
+                <div id="marks-manual-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Roll Number</th>
+                                <th style="color: var(--accent-staff);">Internal (60)</th>
+                                <th style="color: var(--accent-staff);">Assignment (40)</th>
+                                <th style="font-weight: 700;">Total (100)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marks-roster">
+                            <!-- Filled by JS -->
+                        </tbody>
+                    </table>
+                    <button class="btn-save" onclick="saveMarks()">Submit Mark Sheet</button>
+                </div>
+
+                <!-- Excel Upload Content -->
+                <div id="marks-excel-content" style="display: none;">
+                    <div style="border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 15px; padding: 3rem; text-align: center; background: rgba(16, 185, 129, 0.03);">
+                        <span style="font-size: 3rem; display: block; margin-bottom: 1rem;">📊</span>
+                        <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">Upload Excel Mark Sheet</p>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Drag and drop your .xlsx or .csv file here</p>
+                        <input type="file" id="marks-excel-input" style="display: none;" accept=".xlsx, .csv">
+                        <button class="btn-save" style="margin-top: 0;" onclick="document.getElementById('marks-excel-input').click()">Browse Files</button>
+                        <p id="marks-excel-display" style="display: none; margin-top: 1rem; color: var(--accent-staff); font-size: 0.85rem; font-weight: 600;"></p>
+                        
+                        <div id="marks-progress-container" style="display: none; margin-top: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.8rem;">
+                                <span style="color: var(--accent-staff);">📊 Calculating Averages & Syncing...</span>
+                                <span id="marks-progress-percent">0%</span>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden;">
+                                <div id="marks-progress-bar" style="width: 0%; height: 100%; background: var(--accent-staff); transition: width 0.1s linear;"></div>
+                            </div>
+                        </div>
+
+                        <button id="marks-upload-btn" class="btn-save" style="display: none; width: 100%; margin-top: 1.5rem; background: linear-gradient(135deg, #10b981, #059669);" onclick="simulateMarksImport()">📡 Confirm & Import Mark Sheet</button>
+                        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <a href="javascript:void(0)" onclick="downloadMarkTemplate()" style="color: var(--accent-staff); text-decoration: none; font-size: 0.85rem; font-weight: 500;">📥 Download Excel Template for Marks</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDF upload -->
+                <div id="marks-pdf-content" style="display: none;">
+                    <div style="border: 2px dashed rgba(236, 72, 153, 0.3); border-radius: 15px; padding: 3rem; text-align: center; background: rgba(236, 72, 153, 0.03);">
+                        <span style="font-size: 3rem; display: block; margin-bottom: 1rem;">📄</span>
+                        <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">Scan Result PDF</p>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Upload the scanned PDF of the hand-written mark sheet</p>
+                        <input type="file" id="marks-pdf-input" style="display: none;" accept=".pdf">
+                        <button class="btn-save" style="background: linear-gradient(135deg, #ec4899, #be185d); margin-top: 0; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2);" onclick="document.getElementById('marks-pdf-input').click()">Upload PDF</button>
+                        <p id="marks-pdf-display" style="display: none; margin-top: 1rem; color: #ec4899; font-size: 0.85rem; font-weight: 600;"></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Staff Profile Modal -->
+    <div id="profile-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+        <div style="background: rgba(30, 41, 59, 1); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 420px; padding: 2.5rem 2rem; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            <button onclick="document.getElementById('profile-modal').style.display='none'" style="position: absolute; right: 20px; top: 15px; background: none; border: none; color: #94a3b8; font-size: 1.8rem; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'">&times;</button>
+            <div style="text-align: center;">
+                <div id="modal-img" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent-staff); margin: 0 auto; overflow: hidden; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);"></div>
+                <h2 id="modal-name" style="margin-top: 1.2rem; margin-bottom: 0.3rem; font-size: 1.5rem; color: white;">Name</h2>
+                <p id="modal-role" style="color: var(--accent-staff); font-size: 0.95rem; margin-bottom: 1.5rem; font-weight: 600;">Role</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 1.2rem; border-radius: 12px; font-size: 0.9rem; display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; gap: 0.5rem;"><div style="color: #94a3b8; width: 110px;">🎓 Qualification:</div> <div id="modal-qual" style="color: white; font-weight: 500; flex:1;">...</div></div>
+                <div style="display: flex; gap: 0.5rem;"><div style="color: #94a3b8; width: 110px;">⏳ Experience:</div> <div id="modal-exp" style="color: white; font-weight: 500; flex:1;">...</div></div>
+                <div style="display: flex; gap: 0.5rem;"><div style="color: #94a3b8; width: 110px;">🔬 Specialization:</div> <div id="modal-spec" style="color: white; font-weight: 500; flex:1; line-height: 1.4;">...</div></div>
+                <div style="display: flex; gap: 0.5rem;"><div style="color: #94a3b8; width: 110px;">📞 Contact:</div> <div id="modal-phone" style="color: white; font-weight: 500; flex:1;">...</div></div>
+            </div>
+            <p style="text-align: center; color: #64748b; font-size: 0.75rem; margin-top: 1.5rem; margin-bottom: 0;">Verified via GCE Erode Faculty Portal</p>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date
+        document.getElementById('att-date').valueAsDate = new Date();
+
+        function updateSubjectBadge() {
+            const selector = document.getElementById('subject-selector');
+            const badge = document.getElementById('subject-badge');
+            const cleanName = selector.value.replace('✅ ', '');
+            if (badge) badge.textContent = '📖 ' + cleanName;
+
+            // Re-populate roster with records for THIS subject instead of clearing blindly
+            populateRosters();
+        }
+
+        // Dynamic Student List Loading
+        function getStudents() {
+            const saved = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            if (saved.length > 0) return saved;
+            
+            // Fallback demo students if none added yet
+            return [
+                { fullName: "Alan Turing", rollNo: "21CS099" },
+                { fullName: "Grace Hopper", rollNo: "21CS101" },
+                { fullName: "Sridharan P", rollNo: "24CSE48" }
+            ];
+        }
+
+        // Update dynamic data on load
+        window.onload = function() {
+            // Mapping for display (Must match login values)
+            const staffMapping = {
+                'thilagavathe': ['Algorithm Analysis (CS3401)'],
+                'gv': ['Database Management (CS3401)', 'Theory of Computation (CS3452)'],
+                'kalaivani s': ['Theory of Computation (CS3452)'],
+                'annaporani': ['Operating Systems (CS3451)'],
+                'Gayathri': ['Environmental Science (GE3451)'],
+                'sridhar': ['AI & Machine Learning (CS3491)'],
+                'Vasuki': ['AI & Machine Learning (CS3491)']
+            };
+
+            const staffDetails = {
+                'thilagavathe': { 
+                    name: 'Dr. V. Thilagavathe', role: 'Assistant Professor, CSE', 
+                    img: 'https://www.gcee.ac.in/include/ajax/mca/assistant_professor4.jpg',
+                    qual: 'M.E, Ph.D', exp: '17+ Years', spec: 'Computer Science', phone: '+91-99427 65072'
+                },
+                'gv': { 
+                    name: 'Dr. G. Venkatachalam', role: 'Associate Professor, CSE', 
+                    img: 'https://www.gcee.ac.in/include/ajax/cse/associate_professor2.jpg',
+                    qual: 'M.E., Ph.D', exp: '30 Years', spec: 'Computer Networks, Microprocessor and Microcontrolers, Database', phone: '9842794127'
+                },
+                'kalaivani s': { 
+                    name: 'Dr. S. Kalaivani', role: 'Assistant Professor, CSE', 
+                    img: 'https://www.gcee.ac.in/include/ajax/cse/assistant_professor6.jpg',
+                    qual: 'M.E., Ph.D', exp: '18 Years', spec: 'Compiler Design, Semantic web, Data mining', phone: '+91-424-2533279-143'
+                },
+                'annaporani': { 
+                    name: 'Mrs. M. Annapoorani', role: 'Assistant Professor (SR), CSE', 
+                    img: 'https://www.gcee.ac.in/include/ajax/cse/assistant_professor1.jpg',
+                    qual: 'M.E', exp: '21 Years', spec: 'Operating Systems, Data Structures', phone: '+91-9894513301'
+                },
+                'Gayathri': { 
+                    name: 'Prof. Gayathri', role: 'Faculty, Science & Humanities', 
+                    img: '', qual: 'N/A', exp: 'N/A', spec: 'Environmental Science', phone: 'N/A'
+                },
+                'Vasuki': { 
+                    name: 'Mrs. N. Vasuki', role: 'Assistant Professor, CSE', 
+                    img: 'https://www.gcee.ac.in/include/ajax/cse/assistant_professor5.jpg',
+                    qual: 'M.E', exp: '15 Years', spec: 'Operating System, System Software, Computer Networks', phone: '+91-424-2533279-113'
+                },
+                'sridhar': { 
+                    name: 'Dr. Sridharan', role: 'Faculty Advisor', img: '',
+                    qual: 'M.E, Ph.D', exp: '10 Years', spec: 'AI & Data Science', phone: 'N/A'
+                }
+            };
+
+            const userName = localStorage.getItem('currentUser') || 'Staff Instructor';
+            const detail = staffDetails[userName] || { name: 'Prof. ' + userName.charAt(0).toUpperCase() + userName.slice(1), role: 'Subject Expert', img: '' };
+            
+            document.getElementById('staff-name-display').textContent = detail.name;
+            const roleEl = document.querySelector('.user-profile .role');
+            if (roleEl) roleEl.textContent = detail.role;
+
+            const avatarEl = document.getElementById('staff-avatar');
+            if (avatarEl && detail.img) {
+                avatarEl.innerHTML = `<img src="${detail.img}" style="width: 100%; height: 100%; object-fit: cover;" alt="Profile Picture"/>`;
+                avatarEl.style.background = 'transparent';
+                avatarEl.style.border = '2px solid var(--accent-staff)';
+            }
+            
+            // PROFILE MODAL TRIGGER
+            const avatarWrapper = document.querySelector('.user-profile');
+            if (avatarWrapper) {
+                avatarWrapper.style.cursor = 'pointer';
+                avatarWrapper.title = 'Click to view full profile details';
+                avatarWrapper.addEventListener('click', () => {
+                    document.getElementById('modal-img').innerHTML = detail.img ? `<img src="${detail.img}" style="width:100%; height:100%; object-fit:cover;">` : '<span style="font-size:3rem; line-height:114px;">👩‍🏫</span>';
+                    document.getElementById('modal-name').textContent = detail.name;
+                    document.getElementById('modal-role').textContent = detail.role;
+                    document.getElementById('modal-qual').textContent = detail.qual || 'N/A';
+                    document.getElementById('modal-exp').textContent = detail.exp || 'N/A';
+                    document.getElementById('modal-spec').textContent = detail.spec || 'N/A';
+                    document.getElementById('modal-phone').textContent = detail.phone || 'N/A';
+                    document.getElementById('profile-modal').style.display = 'flex';
+                });
+            }
+            
+            // FILTER SUBJECTS based on assigned staff mapping
+            const selector = document.getElementById('subject-selector');
+            const mySubjects = staffMapping[userName] || ['Algorithm (CS3401)', 'DBMS (CS3401)', 'TOC (CS3452)', 'OS (CS3451)', 'ESS (GE3451)'];
+            
+            // Check which subjects already have marks saved
+            const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            const subjectsWithMarks = new Set();
+            Object.values(markRecords).forEach(studentMarks => {
+                Object.keys(studentMarks).forEach(subj => subjectsWithMarks.add(subj));
+            });
+            
+            // Clear and rebuild options with status indicators
+            selector.innerHTML = '';
+            mySubjects.forEach(subj => {
+                const opt = document.createElement('option');
+                opt.value = subj;
+                opt.textContent = subjectsWithMarks.has(subj) ? `✅ ${subj}` : subj;
+                selector.appendChild(opt);
+            });
+
+            populateRosters();
+            updateSubjectBadge();
+        };
+
+        function populateRosters() {
+            const attBody = document.getElementById('attendance-roster');
+            const marksBody = document.getElementById('marks-roster');
+            const activeStudents = getStudents();
+            const subject = document.getElementById('subject-selector').value;
+            const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            
+            attBody.innerHTML = '';
+            marksBody.innerHTML = '';
+
+            activeStudents.forEach((s) => {
+                const rollKey = s.rollNo.trim().toUpperCase();
+                const rollId = rollKey.replace(/\s+/g, '-');
+                // Fetch existing marks for this subject (uppercase key for consistency)
+                const studentMarks = (markRecords[rollKey] || {})[subject] || { internal: 0, lab: 0, total: 0 };
+
+                // Populate Attendance
+                attBody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 700;">${s.fullName}</td>
+                        <td style="color: var(--text-secondary);">${s.rollNo}</td>
+                        <td>
+                            <div class="attendance-opt">
+                                <label class="opt-label"><input type="radio" name="att-${rollId}" value="full" checked> <span>Full Day</span></label>
+                                <label class="opt-label"><input type="radio" name="att-${rollId}" value="half"> <span>Half Day</span></label>
+                                <label class="opt-label" style="color: #ef4444;"><input type="radio" name="att-${rollId}" value="absent"> <span>Absent</span></label>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+
+                // Populate Marks
+                marksBody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 700;">${s.fullName}</td>
+                        <td style="color: var(--text-secondary);">${s.rollNo}</td>
+                        <td><input type="number" class="mark-input" id="int-${rollId}" value="${studentMarks.internal}" oninput="calculateTotal('${rollId}')" max="60"></td>
+                        <td><input type="number" class="mark-input" id="lab-${rollId}" value="${studentMarks.lab}" oninput="calculateTotal('${rollId}')" max="40"></td>
+                        <td><input type="number" class="mark-input" id="tot-${rollId}" value="${studentMarks.total}" disabled style="font-weight: 700; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-staff); color: white;"></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function calculateTotal(rollId) {
+            const intMark = parseInt(document.getElementById(`int-${rollId}`).value) || 0;
+            const labMark = parseInt(document.getElementById(`lab-${rollId}`).value) || 0;
+            document.getElementById(`tot-${rollId}`).value = intMark + labMark;
+        }
+
+        function showTab(tab) {
+            document.getElementById('tab-attendance').style.display = tab === 'attendance' ? 'block' : 'none';
+            document.getElementById('tab-marks').style.display = tab === 'marks' ? 'block' : 'none';
+            
+            document.getElementById('page-title').textContent = tab === 'attendance' ? 'Daily Attendance' : 'Student Performance';
+            document.getElementById('page-desc').textContent = tab === 'attendance' ? 'Record student presence for the current academic session.' : 'Enter and update individual student marks for subject assessments.';
+            
+            // Switch active link
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('staff-active'));
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('staff-active');
+            }
+        }
+
+        function showMarkSubTab(type) {
+            // Hide all sub-content
+            document.getElementById('marks-manual-content').style.display = 'none';
+            document.getElementById('marks-excel-content').style.display = 'none';
+            document.getElementById('marks-pdf-content').style.display = 'none';
+
+            // Show selected sub-content
+            document.getElementById(`marks-${type}-content`).style.display = 'block';
+
+            // Update button states
+            document.getElementById('btn-manual-marks').classList.remove('active');
+            document.getElementById('btn-excel-marks').classList.remove('active');
+            document.getElementById('btn-pdf-marks').classList.remove('active');
+            document.getElementById(`btn-${type}-marks`).classList.add('active');
+        }
+
+        function saveAttendance() {
+            const date = document.getElementById('att-date').value;
+            const subject = document.getElementById('subject-badge').textContent.replace('📖 ', '');
+            let records = JSON.parse(localStorage.getItem('staffAttendanceRecords') || '[]');
+            const activeStudents = getStudents();
+            
+            activeStudents.forEach((s) => {
+                const rollId = s.rollNo.replace(/\s+/g, '-');
+                const radio = document.querySelector(`input[name="att-${rollId}"]:checked`);
+                const status = radio ? radio.value : 'full';
+                records.push({ date, subject, student: s.fullName, roll: s.rollNo, status });
+            });
+            
+            localStorage.setItem('staffAttendanceRecords', JSON.stringify(records));
+            alert('Attendance Records Saved to System! 📅');
+        }
+
+        function saveMarks() {
+            const subject = document.getElementById('subject-selector').value;
+            let markData = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            const activeStudents = getStudents();
+            
+            activeStudents.forEach((s) => {
+                const rollIdString = s.rollNo.trim().toUpperCase();
+                const rollIdForHtml = rollIdString.replace(/\s+/g, '-');
+                const internal = document.getElementById(`int-${rollIdForHtml}`).value || 0;
+                const lab = document.getElementById(`lab-${rollIdForHtml}`).value || 0;
+                const total = parseInt(internal) + parseInt(lab);
+                
+                if (!markData[rollIdString]) markData[rollIdString] = {};
+                markData[rollIdString][subject] = { internal, lab, total };
+            });
+            
+            localStorage.setItem('staffMarkRecords', JSON.stringify(markData));
+            alert('Student Marks Submitted & Synchronized! 📝');
+        }
+
+        function downloadMarkTemplate() {
+            const subject = document.getElementById('subject-selector').value;
+            const headers = "Student Name,Roll Number,Internal (60),Assignment (40)\n";
+            const students = getStudents();
+            const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            let csvContent = "data:text/csv;charset=utf-8," + headers;
+            
+            students.forEach(s => {
+                const currentMarks = (markRecords[s.rollNo] || {})[subject] || { internal: 0, lab: 0 };
+                csvContent += `${s.fullName},${s.rollNo},${currentMarks.internal},${currentMarks.lab}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${subject}_Marks_Template.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // EXCEL MARKS SIMULATION
+        const marksInput = document.getElementById('marks-excel-input');
+        const marksDisplay = document.getElementById('marks-excel-display');
+        const marksUploadBtn = document.getElementById('marks-upload-btn');
+
+        marksInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                marksDisplay.textContent = `📄 ${this.files[0].name} attached!`;
+                marksDisplay.style.display = 'block';
+                marksUploadBtn.style.display = 'block';
+            }
+        });
+
+        function simulateMarksImport() {
+            const progressContainer = document.getElementById('marks-progress-container');
+            const progressBar = document.getElementById('marks-progress-bar');
+            const progressPercent = document.getElementById('marks-progress-percent');
+            
+            marksUploadBtn.style.display = 'none';
+            progressContainer.style.display = 'block';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 30) + 20;
+                if (progress >= 100) {
+                    progress = 100;
+                    progressBar.style.width = '100%';
+                    progressPercent.textContent = '100%';
+                    clearInterval(interval);
+                    
+                    setTimeout(() => {
+                        alert('✅ Bulk Mark Sheet Imported & Distributed to Parent Portals Successfully!');
+                        progressContainer.style.display = 'none';
+                        marksDisplay.style.display = 'none';
+                        marksInput.value = '';
+                    }, 500);
+                }
+                progressBar.style.width = progress + '%';
+                progressPercent.textContent = progress + '%';
+            }, 60);
+        }
+
+        // PDF MARKS SIMULATION
+        document.getElementById('marks-pdf-input').addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const pdfDisplay = document.getElementById('marks-pdf-display');
+                pdfDisplay.textContent = `📑 Scan attached: ${this.files[0].name}`;
+                pdfDisplay.style.display = 'block';
+                setTimeout(() => {
+                    alert('🧠 AI Vision processing PDF scan... Marks auto-extracted!');
+                    showTab('marks');
+                    showMarkSubTab('manual');
+                    // Mock complete extraction from the user's PDF image (ALL UPPERCASE KEYS)
+                    const pdfData = {
+                        "24CSE01": { int: 40, lab: 25 },
+                        "24CSE02": { int: 50, lab: 40 },
+                        "24CSE03": { int: 45, lab: 25 },
+                        "24CSE04": { int: 60, lab: 40 },
+                        "24CSE05": { int: 50, lab: 40 },
+                        "24CSE06": { int: 50, lab: 36 },
+                        "24CSE07": { int: 45, lab: 38 },
+                        "24CSE08": { int: 23, lab: 37 },
+                        "24CSE09": { int: 35, lab: 39 },
+                        "24CSE10": { int: 45, lab: 40 },
+                        "24CSE11": { int: 50, lab: 25 },
+                        "24CSE12": { int: 60, lab: 26 },
+                        "24CSE13": { int: 45, lab: 28 },
+                        "24CSE14": { int: 48, lab: 27 },
+                        "24CSE15": { int: 20, lab: 23 },
+                        "24CSE16": { int: 50, lab: 40 },
+                        "24CSE17": { int: 40, lab: 40 },
+                        "24CSE18": { int: 50, lab: 40 },
+                        "24CSE19": { int: 38, lab: 35 },
+                        "24CSE20": { int: 42, lab: 38 },
+                        "24CSE21": { int: 55, lab: 40 },
+                        "24CSE22": { int: 48, lab: 32 },
+                        "24CSE23": { int: 52, lab: 38 },
+                        "24CSE24": { int: 46, lab: 35 },
+                        "24CSE25": { int: 50, lab: 39 },
+                        "24CSE26": { int: 44, lab: 36 },
+                        "24CSE27": { int: 51, lab: 38 },
+                        "24CSE28": { int: 49, lab: 35 },
+                        "24CSE29": { int: 47, lab: 34 },
+                        "24CSE30": { int: 53, lab: 37 },
+                        "24CSE31": { int: 45, lab: 33 },
+                        "24CSE32": { int: 50, lab: 38 },
+                        "24CSE33": { int: 46, lab: 35 },
+                        "24CSE46": { int: 55, lab: 40 }
+                    };
+
+                    const students = getStudents();
+                    students.forEach(s => {
+                        const rollKey = s.rollNo.trim().toUpperCase();
+                        const rollId = rollKey.replace(/\s+/g, '-');
+                        const data = pdfData[rollKey] || { int: 0, lab: 0 };
+                        
+                        document.getElementById(`int-${rollId}`).value = data.int;
+                        document.getElementById(`lab-${rollId}`).value = data.lab;
+                        document.getElementById(`tot-${rollId}`).value = data.int + data.lab;
+                    });
+                }, 2000);
+            }
+        });
+
+        // Initial load is handled in window.onload above
+    </script>
+</body>
+</html>

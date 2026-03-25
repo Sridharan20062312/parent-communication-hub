@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Portal - Government College of Engineering, Erode</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="logo-container">
+            <img src="gce_erode_logo.png" alt="GCE Erode Logo">
+        </div>
+        <div class="header-text">
+            <h1>GOVERNMENT COLLEGE OF ENGINEERING</h1>
+            <p>ERODE - 638 316</p>
+        </div>
+        <div class="logo-container">
+            <!-- Secondary logo or just balance -->
+            <img src="gce_erode_logo.png" alt="GCE Logo" style="filter: grayscale(1);">
+        </div>
+    </header>
+
+    <section class="welcome-banner">
+        <p>Welcome to GCE Erode Academic Portal</p>
+    </section>
+
+    <main class="main-content">
+        <!-- Left Box: Staff/Advisor Login -->
+        <div class="login-box">
+            <div class="login-box-header">
+                <h3>Staff / Advisor / HOD login</h3>
+            </div>
+            <div class="login-form">
+                <form id="staff-login-form">
+                    <div class="form-group">
+                        <label>Login ID</label>
+                        <input type="text" id="staff-username" placeholder="Enter Login ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="staff-password" placeholder="Enter Password" required>
+                    </div>
+                    <button type="submit" class="submit-btn" id="staff-submit">Login</button>
+                    <div style="margin-top: 1.2rem; display: flex; flex-direction: column; gap: 0.8rem; align-items: center;">
+                        <a href="staff-register.html" style="color: var(--primary-teal); font-size: 0.85rem; font-weight: 700; text-decoration: none; border: 1px solid rgba(42, 157, 143, 0.3); padding: 0.4rem 1rem; border-radius: 6px; background: rgba(42, 157, 143, 0.05); transition: all 0.2s;" onmouseover="this.style.background='rgba(42, 157, 143, 0.15)'">➕ Register New Faculty</a>
+                        <a href="admin-portal.html" style="color: #adb5bd; font-size: 0.8rem; text-decoration: none;">Admin Access</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Center Box: Student Login -->
+        <div class="login-box">
+            <div class="login-box-header" style="background: var(--primary-teal);">
+                <h3>Student login</h3>
+            </div>
+            <div class="login-form">
+                <form id="student-login-form">
+                    <div class="form-group">
+                        <label>Register Number</label>
+                        <input type="text" id="student-regno" placeholder="Enter Register Number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth (DD-MM-YYYY)</label>
+                        <input type="text" id="student-dob" placeholder="DD-MM-YYYY" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Enter Captcha</label>
+                        <input type="text" id="student-captcha-input" placeholder="Captcha" required>
+                        <div class="captcha-container">
+                            <div class="captcha-box" id="student-captcha-display">A4G7</div>
+                            <i class="fas fa-sync-alt refresh-captcha" onclick="generateCaptcha('student')"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="student-submit">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Box 3: Parent Login -->
+        <div class="login-box">
+            <div class="login-box-header" style="background: var(--primary-teal);">
+                <h3>Parent login</h3>
+            </div>
+            <div class="login-form">
+                <form id="parent-login-form">
+                    <div class="form-group">
+                        <label>Ward's Register Number</label>
+                        <input type="text" id="parent-regno" placeholder="Enter Register Number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ward's Date of Birth</label>
+                        <input type="text" id="parent-dob" placeholder="DD-MM-YYYY" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Enter Captcha</label>
+                        <input type="text" id="parent-captcha-input" placeholder="Captcha" required>
+                        <div class="captcha-container">
+                            <div class="captcha-box" id="parent-captcha-display">P0X4</div>
+                            <i class="fas fa-sync-alt refresh-captcha" onclick="generateCaptcha('parent')"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="parent-submit">Login</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Government College of Engineering, Erode. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#">Sitemap</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+    </footer>
+
+    <script src="login.js"></script>
+</body>
+</html>

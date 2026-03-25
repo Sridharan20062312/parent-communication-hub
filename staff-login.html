@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Portal | Subject Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --border: rgba(255, 255, 255, 0.06);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent-staff: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background-image: 
+                radial-gradient(ellipse at 20% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .page-header .shield { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; filter: drop-shadow(0 0 15px #10b981); }
+        .page-header h1 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #10b981, #34d399); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 0.08em; }
+        .page-header p { color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.3rem; }
+        .page-header .sub { color: #10b981; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; margin-top: 0.5rem; }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 950px;
+        }
+
+        .subject-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.8rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--card-accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .subject-card:hover { transform: translateY(-4px); border-color: rgba(16, 185, 129, 0.3); }
+        .subject-card:hover::before { opacity: 1; }
+
+        .subject-card .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .subject-card .icon-box {
+            width: 50px; height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .subject-card .card-title { font-size: 1rem; font-weight: 700; color: white; }
+        .subject-card .card-code { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); font-family: monospace; letter-spacing: 1px; margin-top: 0.2rem; }
+        .subject-card .card-staff { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem; }
+        .subject-card .card-staff span { color: #10b981; font-weight: 600; }
+
+        .login-form { display: none; flex-direction: column; gap: 0.8rem; }
+        .login-form.active { display: flex; }
+
+        .login-form input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            transition: border-color 0.3s;
+        }
+
+        .login-form input:focus { outline: none; border-color: #10b981; }
+        .login-form input::placeholder { color: #64748b; }
+
+        .btn-login-subject {
+            width: 100%;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-login-subject:hover { transform: scale(1.02); filter: brightness(1.1); }
+
+        .btn-expand {
+            width: 100%;
+            padding: 0.7rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 10px;
+            color: #10b981;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-expand:hover { background: rgba(16, 185, 129, 0.2); }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.75rem;
+            text-align: center;
+            display: none;
+        }
+
+        .mark-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            margin-top: 0.3rem;
+        }
+
+        .mark-status.done { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .mark-status.pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+
+        .back-link {
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: white; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <span class="shield">🎓</span>
+        <h1>NAMMA GCE</h1>
+        <p>Faculty Academic Management Portal</p>
+        <p class="sub">Select Your Subject to Manage Marks & Attendance</p>
+    </div>
+
+    <!-- NEW: Batch Completion Tracker -->
+    <div id="batch-tracker" style="width: 100%; max-width: 950px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 15px; padding: 1.2rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 45px; height: 45px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">📊</div>
+            <div>
+                <h4 style="margin: 0; color: #10b981; font-size: 1rem;">Academic Batch Progress</h4>
+                <p style="margin: 0; font-size: 0.75rem; color: var(--text-secondary);">Tracking completion status across all 6 main departments.</p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <span id="tracker-count" style="font-size: 1.5rem; font-weight: 800; color: #10b981;">0/6</span>
+            <div style="width: 150px; height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-top: 0.5rem; overflow: hidden;">
+                <div id="tracker-bar" style="width: 0%; height: 100%; background: #10b981; transition: width 0.5s ease;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="subject-grid" id="subject-grid">
+        <!-- Cards will be generated by JS -->
+    </div>
+
+    <a href="login.html" class="back-link">← Back to Main Login</a>
+
+    <script>
+        const subjects = [
+            {
+                name: 'Algorithm',
+                code: 'CS3401',
+                full: 'Algorithm (CS3401)',
+                staff: 'thilagavathe',
+                password: 'thilaga123',
+                fullName: 'Dr. V. Thilagavathe',
+                designation: 'Assistant Professor, CSE',
+                icon: '🧮',
+                color: '#6366f1',
+                bg: 'rgba(99, 102, 241, 0.15)'
+            },
+            {
+                name: 'DBMS',
+                code: 'CS3401',
+                full: 'DBMS (CS3401)',
+                staff: 'gv',
+                password: 'gv123',
+                fullName: 'Dr. G. Venkatachalam',
+                designation: 'Associate Professor, CSE',
+                icon: '🗄️',
+                color: '#10b981',
+                bg: 'rgba(16, 185, 129, 0.15)'
+            },
+            {
+                name: 'TOC',
+                code: 'CS3452',
+                full: 'TOC (CS3452)',
+                staff: 'kalaivani s',
+                password: 'kalaivani123',
+                fullName: 'Dr. S. Kalaivani',
+                designation: 'Assistant Professor, CSE',
+                icon: '🔀',
+                color: '#f59e0b',
+                bg: 'rgba(245, 158, 11, 0.15)'
+            },
+            {
+                name: 'OS',
+                code: 'CS3451',
+                full: 'OS (CS3451)',
+                staff: 'annaporani',
+                password: 'annaporani123',
+                fullName: 'Mrs. M. Annapoorani',
+                designation: 'Assistant Professor (SR), CSE',
+                icon: '💻',
+                color: '#ec4899',
+                bg: 'rgba(236, 72, 153, 0.15)'
+            },
+            {
+                name: 'ESS',
+                code: 'GE3451',
+                full: 'ESS (GE3451)',
+                staff: 'Gayathri',
+                password: 'gayathri123',
+                fullName: 'Prof. Gayathri',
+                designation: 'Faculty, Science & Humanities',
+                icon: '🌱',
+                color: '#14b8a6',
+                bg: 'rgba(20, 184, 166, 0.15)'
+            },
+            {
+                name: 'AIML',
+                code: 'CS3491',
+                full: 'AIML (CS3491)',
+                staff: 'Vasuki',
+                password: 'vasuki123',
+                fullName: 'Mrs. N. Vasuki',
+                designation: 'Assistant Professor, CSE',
+                icon: '🤖',
+                color: '#8b5cf6',
+                bg: 'rgba(139, 92, 246, 0.15)'
+            }
+        ];
+
+        function renderCards() {
+            const grid = document.getElementById('subject-grid');
+            const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            const students = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            
+            // COMBINE HARDCODED + DYNAMIC STAFF
+            const registeredStaff = JSON.parse(localStorage.getItem('nammaGCE_StaffList') || '[]');
+            const allSubjects = [...subjects, ...registeredStaff];
+            
+            let completedCount = 0;
+            const totalS = allSubjects.length;
+            grid.innerHTML = '';
+
+            allSubjects.forEach((subj, index) => {
+                // ROBUST COMPLETION CHECK: Must have marks for EVERY student in roster
+                let submittedForThisSubject = 0;
+                students.forEach(s => {
+                    const roll = s.rollNo.trim().toUpperCase();
+                    if (markRecords[roll] && markRecords[roll][subj.full]) {
+                        submittedForThisSubject++;
+                    }
+                });
+
+                const isComplete = students.length > 0 && submittedForThisSubject === students.length;
+                if (isComplete) completedCount++;
+
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+                card.style.setProperty('--card-accent', subj.color);
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="icon-box" style="background: ${subj.bg}; color: ${subj.color};">
+                            ${subj.icon}
+                        </div>
+                        <div>
+                            <div class="card-title">${subj.name}</div>
+                            <div class="card-code">${subj.code}</div>
+                            ${isComplete 
+                                ? '<div class="mark-status done">✅ Submitted</div>' 
+                                : `<div class="mark-status pending">⏳ Pending (${submittedForThisSubject}/${students.length})</div>`
+                            }
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 10px; border-left: 3px solid ${subj.color};">
+                        <p style="margin: 0; font-size: 0.85rem; color: #f8fafc; font-weight: 700;">${subj.fullName || 'Prof. ' + subj.staff.charAt(0).toUpperCase() + subj.staff.slice(1)}</p>
+                        <p style="margin: 0; font-size: 0.7rem; color: #94a3b8; margin-top: 0.2rem;">${subj.designation || 'Faculty Member'}</p>
+                    </div>
+                    
+                    <button class="btn-expand" id="btn-expand-${index}" onclick="toggleForm(${index})">
+                        🔐 Login to Enter Marks
+                    </button>
+
+                    <form class="login-form" id="form-${index}" onsubmit="handleLogin(event, ${index})">
+                        <input type="text" id="user-${index}" placeholder="Enter username" autocomplete="off" />
+                        <input type="password" id="pass-${index}" placeholder="Enter password" />
+                        <p class="error-msg" id="error-${index}">❌ Invalid credentials. Try again.</p>
+                        <button type="submit" class="btn-login-subject" style="background: ${subj.color};">
+                            Login as ${subj.name} Faculty →
+                        </button>
+                    </form>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Update Global Tracker
+            const trackerCount = document.getElementById('tracker-count');
+            const trackerBar = document.getElementById('tracker-bar');
+            trackerCount.textContent = `${completedCount}/${totalS}`;
+            trackerBar.style.width = `${(completedCount/totalS) * 100}%`;
+
+            if (completedCount === totalS && totalS > 0) {
+                document.getElementById('batch-tracker').style.background = 'rgba(16, 185, 129, 0.15)';
+                document.getElementById('batch-tracker').style.borderColor = '#10b981';
+                trackerCount.innerHTML = '✅ BATCH READY';
+            }
+        }
+
+        // Global access to all subjects for other functions
+        function getAllSubjects() {
+            const registeredStaff = JSON.parse(localStorage.getItem('nammaGCE_StaffList') || '[]');
+            return [...subjects, ...registeredStaff];
+        }
+
+        function toggleForm(index) {
+            const allS = getAllSubjects();
+            // Close all other forms
+            allS.forEach((_, i) => {
+                if (i !== index) {
+                    const f = document.getElementById(`form-${i}`);
+                    const b = document.getElementById(`btn-expand-${i}`);
+                    if (f) f.classList.remove('active');
+                    if (b) b.style.display = 'block';
+                }
+            });
+
+            const form = document.getElementById(`form-${index}`);
+            const btn = document.getElementById(`btn-expand-${index}`);
+            
+            if (form.classList.contains('active')) {
+                form.classList.remove('active');
+                btn.style.display = 'block';
+            } else {
+                form.classList.add('active');
+                btn.style.display = 'none';
+                document.getElementById(`user-${index}`).focus();
+            }
+        }
+
+        function handleLogin(e, index) {
+            e.preventDefault();
+            const allS = getAllSubjects();
+            const subj = allS[index];
+            const username = document.getElementById(`user-${index}`).value.trim();
+            const password = document.getElementById(`pass-${index}`).value;
+            const errorEl = document.getElementById(`error-${index}`);
+
+            if (username === subj.staff && password === subj.password) {
+                errorEl.style.display = 'none';
+                
+                // Save credentials for dashboard
+                localStorage.setItem('currentUser', username);
+                
+                // Show success
+                const btn = e.target.querySelector('.btn-login-subject');
+                btn.textContent = '✅ Login Successful! Redirecting...';
+                btn.style.opacity = '0.7';
+                btn.disabled = true;
+
+                setTimeout(() => {
+                    window.location.href = 'staff-dashboard.html';
+                }, 1000);
+            } else {
+                errorEl.style.display = 'block';
+                const card = e.target.closest('.subject-card');
+                card.style.animation = 'none';
+                card.offsetHeight;
+                card.style.animation = 'shake 0.4s ease';
+                document.getElementById(`pass-${index}`).value = '';
+            }
+        }
+
+        // Initialize
+        renderCards();
+    </script>
+</body>
+</html>

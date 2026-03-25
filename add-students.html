@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Add Student - Computer Science Department">
+    <title>Add Students | Computer Science Dept.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+    <style>
+        /* Specific adjustments for Add Students Dashboard */
+        .glass-panel-wide {
+            background: var(--card-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-color);
+            
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .dept-banner {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: inline-block;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .select-input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            appearance: none;
+            cursor: pointer;
+        }
+        
+        .select-input:focus {
+            border-color: var(--accent-advisor);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .select-input option {
+            background-color: var(--bg-dark);
+            color: white;
+        }
+
+        /* Set advisor accent since this is an advisor tool */
+        .shape-1 { background: var(--accent-advisor); }
+        .submit-btn { background: var(--accent-advisor); margin-top: 1rem; }
+        .submit-btn:hover { background: #4f46e5; }
+        .input-group input:focus {
+            border-color: var(--accent-advisor);
+        }
+
+        .back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body data-role="advisor">
+    <!-- Animated background shapes -->
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    
+    <div class="login-container" style="max-width: 100%; display: flex; justify-content: center; padding: 2rem;">
+        
+        <main class="glass-panel-wide">
+            <a href="advisor-login.html" class="back-link">
+                <span aria-hidden="true">←</span> Back to Login
+            </a>
+
+            <div style="text-align: center;">
+                <div class="dept-banner">Computer Science Department</div>
+                
+                <header class="logo" style="margin-bottom: 1rem;">
+                    <span class="icon" aria-hidden="true">👩‍💻</span>
+                    <h1>Enroll Student</h1>
+                </header>
+                
+                <p class="subtitle" style="margin-bottom: 3rem;">Register a new student into the CS program.</p>
+            </div>
+
+            <form id="add-student-form">
+                <div class="form-grid">
+                    <!-- First Name -->
+                    <div class="input-group">
+                        <label for="first-name">First Name</label>
+                        <input type="text" id="first-name" placeholder="E.g. Alan" required>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="input-group">
+                        <label for="last-name">Last Name</label>
+                        <input type="text" id="last-name" placeholder="E.g. Turing" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="input-group full-width">
+                        <label for="email">Student Email Address</label>
+                        <input type="email" id="email" placeholder="student@university.edu" required>
+                    </div>
+
+                    <!-- CS Program Track -->
+                    <div class="input-group">
+                        <label for="program-track">Program Track</label>
+                        <select id="program-track" class="select-input" required>
+                            <option value="" disabled selected>Select CS Track...</option>
+                            <option value="software">Software Engineering</option>
+                            <option value="data">Data Science & AI</option>
+                            <option value="cyber">Cybersecurity</option>
+                            <option value="systems">Computer Systems</option>
+                            <option value="general">Undecided / General CS</option>
+                        </select>
+                    </div>
+
+                    <!-- Student ID -->
+                    <div class="input-group">
+                        <label for="student-id">Assigned Student ID</label>
+                        <input type="text" id="student-id" placeholder="Enter ID (e.g. CS-9821)" required>
+                    </div>
+                    <!-- Student Login Setup Section Header -->
+                    <div class="full-width" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+                        <h3 style="color: var(--text-primary); font-size: 1.1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span aria-hidden="true" style="color: var(--accent-advisor);">🔐</span> Student Login Setup
+                        </h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Configure EduConnect portal access credentials for this student.</p>
+                    </div>
+
+                    <!-- Portal Username -->
+                    <div class="input-group">
+                        <label for="username">Portal Username</label>
+                        <input type="text" id="username" placeholder="Automatically generated" required>
+                    </div>
+
+                    <!-- Initial Password -->
+                    <div class="input-group">
+                        <label for="initial-pwd">Initial Password</label>
+                        <input type="text" id="initial-pwd" placeholder="Enter temporary password" required>
+                    </div>
+                    
+                    <!-- Login Options -->
+                    <div class="input-group full-width" style="display: flex; gap: 1.5rem; margin-top: -0.5rem;">
+                        <label class="remember-me" style="display: flex; gap: 0.5rem; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="send-email" checked> Send welcome email with login instructions
+                        </label>
+                        <label class="remember-me" style="display: flex; gap: 0.5rem; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="require-change" checked> Require password change on first login
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="enroll-btn" style="margin-top: 2rem;">Add Student & Create Login</button>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('add-student-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('enroll-btn');
+            const originalText = btn.textContent;
+            
+            btn.innerHTML = 'Adding Student...';
+            btn.style.opacity = '0.8';
+            
+            // Simulate API Request
+            setTimeout(() => {
+                btn.innerHTML = 'Student Added Successfully!';
+                btn.style.backgroundColor = '#10b981'; // Emerald Success
+                
+                // Form reset
+                document.getElementById('add-student-form').reset();
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = '';
+                    btn.style.opacity = '1';
+                }, 2500);
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

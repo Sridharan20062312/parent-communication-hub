@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Hub | NAMMA GCE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-admin: #020617;
+            --accent-admin: #0ea5e9;
+            --card-admin: rgba(15, 23, 42, 0.7);
+            --border-admin: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-admin);
+            color: white;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 40%);
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 2.5rem; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-admin);
+            padding-bottom: 1.5rem;
+        }
+
+        .header-title h1 { font-size: 1.8rem; margin: 0; letter-spacing: 1px; }
+        .header-title p { color: #94a3b8; font-size: 0.85rem; margin-top: 0.3rem; }
+
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+        .admin-section {
+            background: var(--card-admin);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-admin);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .admin-section h2 { 
+            font-size: 1.3rem; 
+            margin-bottom: 1.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.8rem; 
+            color: var(--accent-admin);
+        }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.4rem; font-weight: 700; text-transform: uppercase; }
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Outfit';
+        }
+        .form-group input:focus { outline: none; border-color: var(--accent-admin); }
+
+        .btn-add {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 1rem;
+        }
+        .btn-add:hover { transform: scale(1.02); }
+
+        .list-container { margin-top: 2rem; }
+        .list-item {
+            background: rgba(255,255,255,0.03);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .list-item-info h4 { margin: 0; font-size: 0.95rem; }
+        .list-item-info p { margin: 0; font-size: 0.75rem; color: #94a3b8; }
+
+        .btn-del {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: none;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .badge-subject {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent-admin);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>⚙️ Administrative Control Center</h1>
+                <p>Register new faculty members and institutional advisors.</p>
+            </div>
+            <a href="login.html" style="color: var(--accent-admin); text-decoration: none; font-weight: 700;">🏠 Exit Portal</a>
+        </header>
+
+        <div class="grid-layout">
+            <!-- PART A: MANAGE ADVISORS -->
+            <section class="admin-section">
+                <h2> Institutional Advisor Registration</h2>
+                <div class="form-group">
+                    <label>Advisor Name</label>
+                    <input type="text" id="adv-name" placeholder="Name for Login (e.g. Peterson)">
+                </div>
+                <div class="form-group">
+                    <label>Set Advisor Password</label>
+                    <input type="password" id="adv-pass" placeholder="Create robust password">
+                </div>
+                <button class="btn-add" onclick="addAdvisor()">🚀 Register Advisor</button>
+
+                <div class="list-container" id="advisor-list">
+                    <!-- List items here -->
+                </div>
+            </section>
+
+            <!-- PART B: MANAGE STAFF -->
+            <section class="admin-section" style="border-color: #10b981;">
+                <h2 style="color: #10b981;"> Faculty Registration (Staff)</h2>
+                <div class="form-group">
+                    <label>Staff Username</label>
+                    <input type="text" id="staff-user" placeholder="e.g. gv_staff">
+                </div>
+                <div class="form-group">
+                    <label>Subject Name</label>
+                    <input type="text" id="staff-subj" placeholder="e.g. Computer Networks">
+                </div>
+                <div class="form-group">
+                    <label>Subject Code</label>
+                    <input type="text" id="staff-code" placeholder="e.g. IT3401">
+                </div>
+                <div class="form-group">
+                    <label>Login Password</label>
+                    <input type="password" id="staff-pass" placeholder="Access code for staff">
+                </div>
+                <button class="btn-add" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="addStaff()">✅ Register Faculty</button>
+
+                <div class="list-container" id="staff-list">
+                    <!-- List items here -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // ADVISOR LOGIC
+        function loadAdvisors() {
+            const list = JSON.parse(localStorage.getItem('nammaGCE_AdvisorList') || '[]');
+            const container = document.getElementById('advisor-list');
+            container.innerHTML = '<h3 style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 1rem;">Registered Advisors</h3>';
+            list.forEach((adv, index) => {
+                container.innerHTML += `
+                    <div class="list-item">
+                        <div class="list-item-info">
+                            <h4>👨‍🏫 ${adv.name}</h4>
+                            <p>Password: <b>${adv.password}</b></p>
+                        </div>
+                        <button class="btn-del" onclick="removeAdvisor(${index})">×</button>
+                    </div>
+                `;
+            });
+        }
+
+        function addAdvisor() {
+            const name = document.getElementById('adv-name').value;
+            const pass = document.getElementById('adv-pass').value;
+            if(!name || !pass) return alert("Please fill all fields!");
+
+            let list = JSON.parse(localStorage.getItem('nammaGCE_AdvisorList') || '[]');
+            list.push({ name, password: pass });
+            localStorage.setItem('nammaGCE_AdvisorList', JSON.stringify(list));
+            
+            document.getElementById('adv-name').value = '';
+            document.getElementById('adv-pass').value = '';
+            loadAdvisors();
+        }
+
+        function removeAdvisor(index) {
+            let list = JSON.parse(localStorage.getItem('nammaGCE_AdvisorList') || '[]');
+            list.splice(index, 1);
+            localStorage.setItem('nammaGCE_AdvisorList', JSON.stringify(list));
+            loadAdvisors();
+        }
+
+        // STAFF LOGIC
+        function loadStaff() {
+            const list = JSON.parse(localStorage.getItem('nammaGCE_StaffList') || '[]');
+            const container = document.getElementById('staff-list');
+            container.innerHTML = '<h3 style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 1rem;">Faculty Members</h3>';
+            list.forEach((staff, index) => {
+                container.innerHTML += `
+                    <div class="list-item">
+                        <div class="list-item-info" style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h4>👩‍🏫 ${staff.name}</h4>
+                                <span class="badge-subject">${staff.code}</span>
+                            </div>
+                            <p>${staff.subject} | Pass: <b>${staff.password}</b></p>
+                        </div>
+                        <button class="btn-del" onclick="removeStaff(${index})" style="margin-left: 1rem;">×</button>
+                    </div>
+                `;
+            });
+        }
+
+        function addStaff() {
+            const name = document.getElementById('staff-user').value;
+            const subject = document.getElementById('staff-subj').value;
+            const code = document.getElementById('staff-code').value;
+            const pass = document.getElementById('staff-pass').value;
+
+            if(!name || !subject || !code || !pass) return alert("Please fill all staff fields!");
+
+            let list = JSON.parse(localStorage.getItem('nammaGCE_StaffList') || '[]');
+            list.push({ 
+                name, 
+                staff: name, 
+                subject, 
+                code, 
+                password: pass,
+                full: `${subject} (${code})`,
+                icon: '📝',
+                color: '#10b981',
+                bg: 'rgba(16, 185, 129, 0.15)'
+            });
+            localStorage.setItem('nammaGCE_StaffList', JSON.stringify(list));
+            
+            ['staff-user', 'staff-subj', 'staff-code', 'staff-pass'].forEach(id => document.getElementById(id).value = '');
+            loadStaff();
+        }
+
+        function removeStaff(index) {
+            let list = JSON.parse(localStorage.getItem('nammaGCE_StaffList') || '[]');
+            list.splice(index, 1);
+            localStorage.setItem('nammaGCE_StaffList', JSON.stringify(list));
+            loadStaff();
+        }
+
+        window.onload = () => {
+            loadAdvisors();
+            loadStaff();
+        };
+    </script>
+</body>
+</html>

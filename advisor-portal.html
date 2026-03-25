@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EduConnect - Advisor Dashboard Portal">
+    <title>Advisor Portal | Smart Class Advisor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Specific adjustments for Advisor Dashboard form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-control:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        select.input-control option {
+            background-color: var(--bg-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 1.8rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .dept-badge {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .student-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="main-sidebar">
+            <div class="logo">
+                <span id="logo-shield" style="font-size: 2.2rem;">🛡️</span>
+                <div style="margin-left: 0.8rem;">
+                    <h1 style="font-size: 1.4rem; letter-spacing: 1px; margin: 0;">NAMMA GCE</h1>
+                    <p style="font-size: 0.6rem; opacity: 0.6; margin: 0; letter-spacing: 0.5px; text-transform: uppercase;">Govt. College of Engineering</p>
+                </div>
+            </div>
+
+            <nav id="primary-nav">
+                <a href="advisor-portal.html" class="nav-item active"><span class="icon" aria-hidden="true">📊</span>
+                    ADD STUDENTS</a>
+                <a href="my-students.html" class="nav-item"><span class="icon" aria-hidden="true">👨‍🎓</span> My
+                    Students</a>
+                <a href="enrollments.html" class="nav-item"><span class="icon" aria-hidden="true">📝</span>
+                    Enrollments</a>
+                <a href="staff-dashboard.html" class="nav-item"><span class="icon" aria-hidden="true">📅</span> Attendance</a>
+                <a href="staff-dashboard.html" class="nav-item"><span class="icon" aria-hidden="true">📝</span> Manage Marks</a>
+                <a href="#" class="nav-item"><span class="icon" aria-hidden="true">📅</span> Appointments <span
+                        class="badge">4</span></a>
+                <a href="javascript:void(0)" onclick="openSettings()" class="nav-item"><span class="icon" aria-hidden="true">⚙️</span> Settings</a>
+                <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <a href="#" onclick="localStorage.removeItem('currentUser'); window.location.href='login.html';" class="nav-item logout-link" style="color: #ff4d6d; font-weight: 600;"><span class="icon" aria-hidden="true">🚪</span> Log Out</a>
+                </div>
+            </nav>
+
+            <div class="user-profile" id="advisor-profile-btn">
+                <div class="avatar" aria-hidden="true" id="advisor-avatar" style="overflow: hidden; cursor: pointer;">👨‍🏫</div>
+                <div class="user-info">
+                    <p class="name" id="advisor-name">Dr. Peterson</p>
+                    <p class="role" id="advisor-role">CS Academic Advisor</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content" id="main-view">
+            <header id="top-header">
+                <div class="header-left">
+                    <h2>Advisor Dashboard</h2>
+                    <p>Manage your computer science student roster and enrollments.</p>
+                </div>
+                <div class="header-right">
+                    <button class="icon-btn" aria-label="Notifications">
+                        🔔<span class="notification-dot"></span>
+                    </button>
+                    <button class="new-message-btn" id="btn-message-student">+ Message Student</button>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+
+                <!-- Quick Add Student Form Section -->
+                <section class="card glass-panel" id="section-enroll" style="grid-column: span 3;">
+                    <div class="card-header"
+                        style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h3 style="margin-bottom: 0.3rem;">Register New Student</h3>
+                            <span class="dept-badge">Computer Science Dept.</span>
+                        </div>
+                        <div style="display: flex; gap: 0.8rem;">
+                            <a href="Admission_Form_Template.html" target="_blank"
+                                style="background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.3); color: #ec4899; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s;"
+                                onmouseover="this.style.background='rgba(236, 72, 153, 0.2)'"
+                                onmouseout="this.style.background='rgba(236, 72, 153, 0.1)'">
+                                📑 Open PDF Form Template
+                            </a>
+                            <a href="javascript:void(0)" onclick="downloadStudentTemplate()"
+                                style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--success); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s;"
+                                onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'"
+                                onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'">
+                                📥 Download Excel Template
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Toggle Tabs for Manual vs Excel vs PDF -->
+                    <div
+                        style="display: flex; gap: 1.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; padding-bottom: 0.5rem;">
+                        <button type="button" id="tab-manual"
+                            style="background: none; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; color: var(--accent-primary); border-bottom: 2px solid var(--accent-primary); padding-bottom: 0.4rem; transition: all 0.3s ease;">Manual
+                            Entry</button>
+                        <button type="button" id="tab-excel"
+                            style="background: none; border: none; font-size: 0.95rem; font-weight: 500; cursor: pointer; color: var(--text-secondary); border-bottom: 2px solid transparent; padding-bottom: 0.4rem; transition: all 0.3s ease;">Excel
+                            Upload</button>
+                        <button type="button" id="tab-pdf"
+                            style="background: none; border: none; font-size: 0.95rem; font-weight: 500; cursor: pointer; color: var(--text-secondary); border-bottom: 2px solid transparent; padding-bottom: 0.4rem; transition: all 0.3s ease;">PDF
+                            Form</button>
+                        <button type="button" id="tab-broadcast"
+                            style="background: none; border: none; font-size: 0.95rem; font-weight: 500; cursor: pointer; color: var(--text-secondary); border-bottom: 2px solid transparent; padding-bottom: 0.4rem; transition: all 0.3s ease;">📢 Broadcast Announcements</button>
+                    </div>
+
+                    <!-- EXCEL UPLOAD FORM -->
+                    <form id="excel-upload-form" style="display: none;">
+                        <div style="border: 2px dashed rgba(16, 185, 129, 0.4); border-radius: 12px; padding: 2.5rem 1.5rem; text-align: center; background: rgba(15, 23, 42, 0.4); margin-bottom: 2rem; cursor: pointer; transition: all 0.3s ease;"
+                            id="drop-zone"
+                            onmouseover="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.borderColor='#10b981';"
+                            onmouseout="this.style.background='rgba(15, 23, 42, 0.4)'; this.style.borderColor='rgba(16, 185, 129, 0.4)';">
+                            <span style="font-size: 3rem; margin-bottom: 1rem; display: block;">📂</span>
+                            <h4 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.5rem;">Import Excel Directory</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Drag & drop your student database (.xlsx, .csv)</p>
+
+                            <label
+                                style="background: rgba(255,255,255,0.1); color: white; padding: 0.8rem 1.8rem; border-radius: 10px; font-weight: 600; cursor: pointer; display: inline-block; transition: background 0.3s; border: 1px solid rgba(255,255,255,0.1);"
+                                onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+                                onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                                Browse Excel Files
+                                <input type="file" id="excel-file-input" style="display: none;"
+                                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                            </label>
+
+                            <p id="file-name-display"
+                                style="color: #10b981; font-weight: 700; font-size: 0.95rem; margin-top: 1.5rem; display: none; background: rgba(16, 185, 129, 0.1); padding: 0.5rem; border-radius: 6px;">
+                                file.xlsx selected!</p>
+                        </div>
+
+                        <!-- EXCEL PREVIEW TABLE -->
+                        <div id="excel-import-preview" style="display: none; margin-bottom: 2rem; border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; overflow: hidden; background: rgba(15, 23, 42, 0.6); animation: fadeIn 0.4s ease-out;">
+                            <div style="padding: 1rem; background: rgba(16, 185, 129, 0.1); border-bottom: 1px solid rgba(16, 185, 129, 0.2); display: flex; justify-content: space-between; align-items: center;">
+                                <h5 style="margin: 0; color: #10b981; font-weight: 700;">📊 Parsing Excel Data Preview</h5>
+                                <span style="font-size: 0.75rem; color: #94a3b8; font-family: monospace;">Found 46 Valid Records in Sheet1</span>
+                            </div>
+                            <div style="max-height: 250px; overflow-y: auto;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+                                    <thead style="background: rgba(255,255,255,0.02); color: #94a3b8; position: sticky; top: 0; backdrop-filter: blur(10px);">
+                                        <tr>
+                                            <th style="padding: 1rem;">REG NO</th>
+                                            <th style="padding: 1rem;">ROLL NO</th>
+                                            <th style="padding: 1rem;">NAME</th>
+                                            <th style="padding: 1rem;">STATUS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="preview-tbody">
+                                        <tr><td style="padding: 1rem;">731124104001</td><td style="padding: 1rem;">24CSE01</td><td style="padding: 1rem;">Abdulla A</td><td style="padding: 1rem; color: #10b981;">Ready</td></tr>
+                                        <tr><td style="padding: 1rem;">731124104002</td><td style="padding: 1rem;">24cse02</td><td style="padding: 1rem;">K.Agashree</td><td style="padding: 1rem; color: #10b981;">Ready</td></tr>
+                                        <tr><td style="padding: 1rem;">731124104003</td><td style="padding: 1rem;">24CSE03</td><td style="padding: 1rem;">AJAY KUMAR S</td><td style="padding: 1rem; color: #10b981;">Ready</td></tr>
+                                        <tr><td colspan="4" style="text-align: center; color: #94a3b8; font-size: 0.75rem; padding: 0.5rem;">... and 18 more rows ...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="import-progress-container" style="display: none; margin-bottom: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem;">
+                                <span style="color: #10b981; font-weight: 700;">⚙️ Syncing Student Records...</span>
+                                <span id="progress-percent" style="color: var(--text-secondary);">0%</span>
+                            </div>
+                            <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; border: 1px solid rgba(16, 185, 129, 0.2);">
+                                <div id="import-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.1s linear;"></div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="upload-btn" style="margin-top: 0; background: linear-gradient(135deg, #10b981, #059669); font-weight: 700;">🚀 Upload & Import Students</button>
+                    </form>
+
+                    <!-- PDF UPLOAD FORM -->
+                    <form id="pdf-upload-form" style="display: none;">
+                        <div style="border: 2px dashed rgba(236, 72, 153, 0.4); border-radius: 12px; padding: 3rem 1.5rem; text-align: center; background: rgba(15, 23, 42, 0.4); margin-bottom: 1.5rem; cursor: pointer; transition: all 0.3s ease;"
+                            id="pdf-drop-zone"
+                            onmouseover="this.style.background='rgba(236, 72, 153, 0.1)'; this.style.borderColor='#ec4899';"
+                            onmouseout="this.style.background='rgba(15, 23, 42, 0.4)'; this.style.borderColor='rgba(236, 72, 153, 0.4)';">
+                            <span style="font-size: 3rem; margin-bottom: 1rem; display: block;">📄</span>
+                            <h4 style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.5rem;">Drag &
+                                drop your scanned PDF Form here</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Supports
+                                standard .pdf admission forms</p>
+
+                            <label
+                                style="background: rgba(255,255,255,0.1); color: white; padding: 0.7rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer; display: inline-block; transition: background 0.3s;"
+                                onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+                                onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                                Browse PDF Files
+                                <input type="file" id="pdf-file-input" style="display: none;"
+                                    accept=".pdf, application/pdf">
+                            </label>
+
+                            <div id="pdf-file-details" style="display: none; align-items: center; justify-content: center; gap: 1rem; margin-top: 1rem;">
+                                <p id="pdf-file-name-display"
+                                    style="color: #ec4899; font-weight: 600; font-size: 0.9rem; margin: 0;">
+                                    student_application.pdf selected!</p>
+                                <button type="button" onclick="clearSelectedPDF()" 
+                                    style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s;"
+                                    onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'"
+                                    onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'">
+                                    🗑️ Delete
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="pdf-upload-btn"
+                            style="margin-top: 0; background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);">Extract
+                            Data & Import PDF</button>
+                    </form>
+
+                    <!-- MANUAL ENTRY FORM -->
+                    <form id="quick-enroll-form">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="reg-no">Registration Number (Reg No)</label>
+                                <input type="text" id="reg-no" class="input-control" placeholder="E.g. 21CS001"
+                                    required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="roll-no">Roll Number</label>
+                                <input type="text" id="roll-no" class="input-control" placeholder="E.g. 45" required>
+                            </div>
+
+                            <div class="input-group full-width">
+                                <label for="full-name">Full Name</label>
+                                <input type="text" id="full-name" class="input-control" placeholder="E.g. Jane Doe"
+                                    required>
+                            </div>
+
+                            <div class="input-group full-width">
+                                <label for="email">Student Email ID</label>
+                                <input type="email" id="email" class="input-control" placeholder="jane@university.edu" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="parent-email">Parent Email ID</label>
+                                <input type="email" id="parent-email" class="input-control" placeholder="parent@gmail.com" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="parent-mobile">Parent Mobile Number (SMS)</label>
+                                <input type="text" id="parent-mobile" class="input-control" placeholder="9876543210" required>
+                            </div>
+                        </div>
+
+
+
+                        <button type="submit" class="submit-btn" id="enroll-btn">Add Student to Roster</button>
+                    </form>
+                </section>
+
+                <!-- Recently Added PDF Students Section -->
+                <section class="card col-span-2 glass-panel" id="section-recent-pdf"
+                    style="grid-column: span 3; display: none;">
+                    <div class="card-header" style="border-bottom: 1px solid rgba(236, 72, 153, 0.2);">
+                        <h3 style="color: #ec4899; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>📄</span> Recently Added PDF Students
+                        </h3>
+                        <span
+                            style="background: rgba(236, 72, 153, 0.1); color: #ec4899; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">PDF
+                            EXTRACTS</span>
+                    </div>
+                    <div class="student-list" id="pdf-student-roster" style="padding: 1.2rem;">
+                        <!-- PDF students will appear here -->
+                    </div>
+                </section>
+
+                <!-- General Recent Advisees List Section -->
+                <section class="card col-span-2 glass-panel" id="section-recent" style="grid-column: span 3;">
+                    <div class="card-header" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="display: flex; align-items: center; gap: 0.8rem; margin: 0;">
+                            <span>Master Student Roster</span> 
+                            <span id="roster-count-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.1rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.2);">0 Students</span>
+                        </h3>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <input type="text" id="roster-search" oninput="filterRoster()" placeholder="Search Reg No or Name..." style="padding: 0.6rem 1.2rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; width: 280px; font-size: 0.85rem; outline: none; transition: border 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" onfocus="this.style.borderColor='var(--accent-primary)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                            <a href="my-students.html" class="view-all" style="color: #94a3b8; font-size: 0.85rem; text-decoration: underline; font-weight: 600;">View Full Directory</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Table View Instead of Cards for Better Excel Feel -->
+                    <div style="overflow-x: auto; background: rgba(0,0,0,0.1); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                            <thead style="background: rgba(255,255,255,0.03); border-bottom: 2px solid rgba(255,255,255,0.05);">
+                                <tr>
+                                    <th style="padding: 1rem; color: #94a3b8; font-weight: 600;">REG NO</th>
+                                    <th style="padding: 1rem; color: #94a3b8; font-weight: 600;">ROLL NO</th>
+                                    <th style="padding: 1rem; color: #94a3b8; font-weight: 600;">NAME</th>
+                                    <th style="padding: 1rem; color: #94a3b8; font-weight: 600;">EMAIL-id</th>
+                                    <th style="padding: 1rem; color: #94a3b8; font-weight: 600;">SOURCE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-roster">
+                                <!-- Dynamically added rows will appear here -->
+                                <tr id="empty-roster-msg">
+                                    <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                                        No students have been added recently. Register a student above!
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+            <!-- Master Academic Overseer Section -->
+            <section class="advisor-card" style="border: 1px solid #10b981; margin-top: 2.5rem; background: rgba(15, 23, 42, 0.8); border-radius: 12px; padding: 1.5rem; box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);">
+                <header class="card-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <span style="font-size: 1.5rem;">🏦</span>
+                        <h3 style="margin: 0; font-size: 1.25rem; letter-spacing: 0.5px;">Master Academic Records</h3>
+                    </div>
+                    <div style="display: flex; gap: 0.8rem; align-items: center;">
+                        <input type="text" id="master-search" placeholder="Search Reg or Roll No..." style="padding: 0.6rem 1rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; width: 220px; font-size: 0.85rem;">
+                        <button onclick="loadMasterMarks()" style="background: var(--accent-advisor); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s;">
+                            <span>🔍</span> Load Records
+                        </button>
+                        <button onclick="toggleBroadsheet(true)" style="background: rgba(99, 102, 241, 0.1); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(99, 102, 241, 0.2)'" onmouseout="this.style.background='rgba(99, 102, 241, 0.1)'">
+                            <span>📈</span> Comprehensive Broadsheet
+                        </button>
+                        <button onclick="exportBroadsheetExcel()" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'">
+                            <span>📊</span> Export CSV
+                        </button>
+                    </div>
+                </header>
+                
+                <div id="student-meta-display" style="display: none; margin-bottom: 1.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.05); border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span id="meta-name" style="font-size: 1.1rem; font-weight: 700; color: white;">Alan Turing</span>
+                            <span id="meta-roll" style="color: #94a3b8; margin-left: 0.8rem; font-family: monospace;">21CS099</span>
+                        </div>
+                        <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">Verified Enrollment</span>
+                    </div>
+                </div>
+
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; background: rgba(255,255,255,0.02);">
+                                <th style="padding: 1.2rem 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Subject</th>
+                                <th style="padding: 1.2rem 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Staff Entry (60+40)</th>
+                                <th style="padding: 1.2rem 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Advisor Override (100)</th>
+                                <th style="padding: 1.2rem 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Action</th>
+                                <th style="padding: 1.2rem 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Parent Hub</th>
+                                <th style="padding: 1.2rem 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">SMS / Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-marks-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 4rem; color: #94a3b8; font-size: 0.95rem;">
+                                    Enter a student's roll number to view and manage their academic transcript. 🕵️‍♂️📈
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- NEW: Live Broadsheet View Section -->
+                <div id="broadsheet-view" style="display: none; margin-top: 2rem; border-top: 1px solid rgba(16, 185, 129, 0.2); padding-top: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="margin: 0; color: #10b981;">📜 Batch Academic Broadsheet (Preview)</h4>
+                        <button onclick="toggleBroadsheet(false)" style="background: none; border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; padding: 0.3rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Close Broadsheet</button>
+                    </div>
+                    <div style="overflow-x: auto; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                        <table id="broadsheet-table" style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: center;">
+                            <!-- Filled by JS -->
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Remark Inbox Section (Advisor Only) -->
+            <section class="advisor-card" style="border: 1px solid var(--accent-advisor); margin-top: 2rem; background: rgba(99, 102, 241, 0.05);">
+                <header class="card-header">
+                    <h3>🕵️‍♂️ Incoming Parent Remarks</h3>
+                    <span id="unread-count" style="background: var(--accent-advisor); padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem; font-weight: 700;">0 New</span>
+                </header>
+                <div id="parent-remarks-list" style="max-height: 400px; overflow-y: auto; padding: 1rem; border-radius: 12px; background: rgba(0,0,0,0.1); margin-top: 1rem;">
+                    <!-- Filled by Script -->
+                    <p style="color: var(--text-secondary); text-align: center;">Scanning for parent communications...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        window.onload = function() {
+            renderRemarks();
+        }
+
+        function loadMasterMarks() {
+            const query = document.getElementById('master-search').value.trim().toUpperCase();
+            const body = document.getElementById('master-marks-body');
+            const meta = document.getElementById('student-meta-display');
+            const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            const enrollmentRecords = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+
+            // SEARCH BY ROLL OR REG NO
+            const student = enrollmentRecords.find(s => s.rollNo.toUpperCase() === query || s.regNo === query);
+            
+            if (!student) {
+                body.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 3rem; color: #ef4444;">❌ No records found for this ID. Ensure the Register Number or Roll Number is correct.</td></tr>';
+                meta.style.display = 'none';
+                return;
+            }
+
+            const roll = student.rollNo.trim().toUpperCase();
+            meta.style.display = 'block';
+            document.getElementById('meta-name').textContent = student.fullName;
+            document.getElementById('meta-roll').textContent = student.rollNo;
+
+            if (!markRecords[roll]) {
+                body.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #ef4444; padding: 3rem;">No academic records found for student: <b>' + student.fullName + '</b>. <br><span style="font-size: 0.8rem; color: #94a3b8;">(Ensure staff have submitted marks for this student)</span> ⚠️</td></tr>';
+                return;
+            }
+
+            body.innerHTML = '';
+            const myMarks = markRecords[roll];
+
+            Object.keys(myMarks).forEach(subject => {
+                const data = myMarks[subject];
+                body.innerHTML += `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 1.2rem 1rem; font-weight: 700; color: #f8fafc;">${subject}</td>
+                        <td style="padding: 1.2rem 1rem; color: #94a3b8;">
+                            <span style="color: #10b981;">${data.internal}</span> / <span style="color: #6366f1;">${data.lab}</span> 
+                            <span style="margin-left: 0.5rem; opacity: 0.5;">(Total: ${data.total})</span>
+                        </td>
+                        <td style="padding: 1.2rem 1rem;">
+                            <input type="number" id="override-${subject.replace(/\s+/g, '-')}" class="advisor-input" style="width: 85px; padding: 0.5rem; background: rgba(0,0,0,0.4); border: 1px solid #10b981; border-radius: 8px; color: white; text-align: center; font-weight: 700;" value="${data.total}" max="100">
+                        </td>
+                        <td style="padding: 1.2rem 1rem;">
+                            <button onclick="updateMasterMark('${roll}', '${subject}')" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='#10b981'; this.style.color='white';">Official Override</button>
+                        </td>
+                        <td style="padding: 1.2rem 1rem;">
+                            <button onclick="viewParentRemarks('${student.fullName}')" style="background: rgba(167, 139, 250, 0.1); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.3); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 700;">👁️ View Remarks</button>
+                        </td>
+                        <td style="padding: 1.2rem 1rem; display: flex; gap: 0.4rem; flex-direction: column;">
+                            <button onclick="sendOfficialSMS('${roll}', '${subject}')" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); padding: 0.35rem; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-weight: 700; transition: all 0.2s;">📲 SMS</button>
+                            <button onclick="sendOfficialEmail('${roll}', '${subject}')" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.35rem; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-weight: 700; transition: all 0.2s;">📧 Email</button>
+                            <button onclick="postAdvisorRemark('${student.regNo}', '${subject}')" style="background: rgba(99, 102, 241, 0.1); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0.35rem; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-weight: 700;">📝 Remark</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+
+
+        function postAdvisorRemark(regNo, subject) {
+            const remark = prompt(`Write an official remark for the parent regarding ${subject}:`);
+            if (remark) {
+                const messages = JSON.parse(localStorage.getItem('nammaGCE_AdvisorMessages') || '[]');
+                messages.push({
+                    regNo: regNo,
+                    from: "Dr. Peterson (Institutional Advisor)",
+                    text: `Regarding ${subject}: ${remark}`,
+                    timestamp: new Date().toLocaleString()
+                });
+                localStorage.setItem('nammaGCE_AdvisorMessages', JSON.stringify(messages));
+                alert("Remark successfully posted to Parent Dashboard! 🛡️");
+            }
+        }
+
+        function viewParentRemarks(studentName) {
+            const list = document.getElementById('parent-remarks-list');
+            const remarks = JSON.parse(localStorage.getItem('nammaGCE_ParentMessages') || '[]');
+            const studentRemarks = remarks.filter(r => r.student === studentName);
+            
+            if (studentRemarks.length > 0) {
+                // Focus the Incoming Parent Remarks section
+                const section = document.querySelector('#parent-remarks-list').parentElement;
+                section.scrollIntoView({ behavior: 'smooth' });
+                section.style.boxShadow = '0 0 40px rgba(167, 139, 250, 0.2)';
+                
+                // Temporarily filter the list
+                let html = `<div style="padding-bottom: 1rem; border-bottom: 1px solid #333; margin-bottom: 1rem; display: flex; justify-content: space-between;">
+                                <h4 style="color: #a78bfa;">Filtered for: ${studentName}</h4>
+                                <button onclick="renderRemarks()" style="background: none; border: 1px solid #555; color: #999; padding: 0.2rem 0.5rem; cursor: pointer; border-radius: 5px;">Show All</button>
+                            </div>`;
+                studentRemarks.reverse().forEach(r => {
+                    html += `
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(167, 139, 250, 0.2); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                            <div style="font-size: 0.75rem; color: #a78bfa; margin-bottom: 0.5rem;">📅 ${r.timestamp}</div>
+                            <p style="margin: 0;">${r.message}</p>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+            } else {
+                alert(`No remarks submitted from ${studentName}'s parent yet.`);
+            }
+        }
+
+        function sendOfficialSMS(roll, subject) {
+            const inputId = `override-${subject.replace(/\s+/g, '-')}`;
+            const val = document.getElementById(inputId).value;
+            
+            // Get student name for clarity
+            const enrollmentRecords = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            const student = enrollmentRecords.find(s => s.rollNo.toUpperCase() === roll.toUpperCase());
+            const studentName = student ? student.fullName : roll;
+            
+            let parentMobile = student ? student.parentMobile : "";
+            if(!parentMobile) {
+                parentMobile = prompt(`Enter Parent's WhatsApp Number for ${studentName} (e.g. 9876543210):`, "");
+                if(!parentMobile) return;
+                if(student) {
+                    student.parentMobile = parentMobile;
+                    localStorage.setItem('studentEnrollments', JSON.stringify(enrollmentRecords));
+                }
+            }
+
+            const message = `📚 *NAMMA GCE Academic Update*\n\nDear Parent,\nYour ward *${studentName.toUpperCase()}* has scored *${val}/100* in the *${subject}* exam.\n\nPlease login to the Parent Dashboard for detailed insights and remarks.\n\n_Regards,_\n_NAMMA GCE Academic Advisor_`;
+            
+            // Clean mobile number (remove spaces, +91, etc.)
+            const cleanNumber = parentMobile.replace(/\D/g, '').replace(/^0+/, '');
+            const waNumber = cleanNumber.startsWith('91') ? cleanNumber : '91' + cleanNumber;
+
+            // Open WhatsApp with pre-filled message
+            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            
+            const btn = event.target;
+            btn.textContent = '✅ WhatsApp Sent';
+            btn.style.background = '#25d366';
+            btn.style.color = 'white';
+            btn.style.borderColor = '#25d366';
+        }
+
+        function sendOfficialEmail(roll, subject) {
+            const inputId = `override-${subject.replace(/\s+/g, '-')}`;
+            const val = document.getElementById(inputId).value;
+            
+            const enrollmentRecords = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            const student = enrollmentRecords.find(s => s.rollNo.toUpperCase() === roll.toUpperCase());
+            const studentName = student ? student.fullName : roll;
+            
+            let parentEmail = student ? student.parentEmail : "";
+            if(!parentEmail) {
+                parentEmail = prompt(`Enter Parent's Email ID for ${studentName}:`, student?.email || "");
+                if(!parentEmail) return;
+                if(student) {
+                    student.parentEmail = parentEmail;
+                    localStorage.setItem('studentEnrollments', JSON.stringify(enrollmentRecords));
+                }
+            }
+
+            const mailSubject = `Academic Update: ${studentName.toUpperCase()} - ${subject}`;
+            const message = `Dear Parent,\n\nWe would like to inform you that your ward, ${studentName.toUpperCase()}, has scored ${val}/100 in the recent ${subject} assessment.\n\nPlease log in to the Parent Dashboard for more detailed insights and remarks.\n\nRegards,\nNAMMA GCE Academic Advisor`;
+            
+            // Trigger Email intent
+            window.location.href = `mailto:${parentEmail}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(message)}`;
+            
+            const btn = event.target;
+            btn.textContent = '✅ Email Sent';
+            btn.style.background = '#10b981';
+            btn.style.color = 'white';
+            btn.style.borderColor = '#10b981';
+        }
+
+        function updateMasterMark(roll, subject) {
+            let markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            const inputId = `override-${subject.replace(/\s+/g, '-')}`;
+            const newValue = document.getElementById(inputId).value;
+
+            if (markRecords[roll] && markRecords[roll][subject]) {
+                markRecords[roll][subject].total = parseInt(newValue);
+                localStorage.setItem('staffMarkRecords', JSON.stringify(markRecords));
+                alert(`Official Override Successful!\n\nSubject: ${subject}\nRoll No: ${roll}\nUpdated Total: ${newValue} / 100 🛡️🚀`);
+                loadMasterMarks();
+            }
+        }
+
+        function exportBroadsheetExcel() {
+            const enrollmentRecords = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            
+            if (enrollmentRecords.length === 0) {
+                alert('No students found in the roster to export.');
+                return;
+            }
+
+            const subjects = [
+                "Algorithm Analysis (CS3401)",
+                "Database Management (CS3401)",
+                "Theory of Computation (CS3452)",
+                "Operating Systems (CS3451)",
+                "Environmental Science (GE3451)",
+                "AI & Machine Learning (CS3491)"
+            ];
+
+            function getGrade(total) {
+                const t = parseInt(total);
+                if (isNaN(t) || t === 0) return "UA";
+                if (t >= 91) return "O";
+                if (t >= 81) return "A+";
+                if (t >= 71) return "A";
+                if (t >= 61) return "B+";
+                if (t >= 50) return "B";
+                return "U";
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            // Header Row 1: Subject Codes
+            csvContent += "Reg. Number,Stud. Name,";
+            subjects.forEach(subj => {
+                const code = subj.match(/\((.*?)\)/)?.[1] || subj;
+                csvContent += `${code},`;
+            });
+            csvContent += "\n";
+
+            // Header Row 2: "Grade" indicators
+            csvContent += ",,";
+            subjects.forEach(() => {
+                csvContent += "Grade,";
+            });
+            csvContent += "\n";
+
+            // Data Rows
+            enrollmentRecords.forEach(student => {
+                csvContent += `${student.regNo},${student.fullName},`;
+                const studentMarks = markRecords[student.rollNo.trim().toUpperCase()] || {};
+                
+                subjects.forEach(subj => {
+                    const markData = studentMarks[subj];
+                    if (markData) {
+                        csvContent += `${getGrade(markData.total)},`;
+                    } else {
+                        csvContent += ",";
+                    }
+                });
+                csvContent += "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Broadsheet_Marks_Report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function toggleBroadsheet(show) {
+            const view = document.getElementById('broadsheet-view');
+            const masterBody = document.querySelector('#section-recent + section table'); // Just selecting the container
+            
+            if (show) {
+                renderBroadsheetUI();
+                view.style.display = 'block';
+                view.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                view.style.display = 'none';
+            }
+        }
+
+        function renderBroadsheetUI() {
+            const enrollmentRecords = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            const markRecords = JSON.parse(localStorage.getItem('staffMarkRecords') || '{}');
+            const table = document.getElementById('broadsheet-table');
+            
+            const subjects = [
+                "Algorithm Analysis (CS3401)",
+                "Database Management (CS3401)",
+                "Theory of Computation (CS3452)",
+                "Operating Systems (CS3451)",
+                "Environmental Science (GE3451)",
+                "AI & Machine Learning (CS3491)"
+            ];
+
+            function getGrade(total) {
+                const t = parseInt(total);
+                if (isNaN(t) || t === 0) return "UA";
+                if (t >= 91) return "O";
+                if (t >= 81) return "A+";
+                if (t >= 71) return "A";
+                if (t >= 61) return "B+";
+                if (t >= 50) return "B";
+                return "U";
+            }
+
+            let html = `
+                <thead style="background: rgba(255,255,255,0.05);">
+                    <tr>
+                        <th style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1);">Reg. Number</th>
+                        <th style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1);">Student Name</th>
+                        ${subjects.map(s => `<th style="padding: 1rem; border: 1px solid rgba(255,255,255,0.1);">${s.match(/\((.*?)\)/)?.[1] || s}</th>`).join('')}
+                    </tr>
+                    <tr>
+                        <th style="background: transparent;"></th>
+                        <th style="background: transparent;"></th>
+                        ${subjects.map(() => `<th style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 0.7rem;">Grade</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            enrollmentRecords.forEach(student => {
+                const studentMarks = markRecords[student.rollNo.trim().toUpperCase()] || {};
+                html += `
+                    <tr>
+                        <td style="padding: 1rem; border: 1px solid rgba(255,255,255,0.05); text-align: left; font-family: monospace;">${student.regNo}</td>
+                        <td style="padding: 1rem; border: 1px solid rgba(255,255,255,0.05); text-align: left;">${student.fullName}</td>
+                        ${subjects.map(subj => {
+                            const grade = studentMarks[subj] ? getGrade(studentMarks[subj].total) : '-';
+                            const color = grade === 'U' || grade === 'UA' ? '#ef4444' : (grade === 'O' || grade === 'A+' ? '#10b981' : '#f59e0b');
+                            return `<td style="padding: 1rem; border: 1px solid rgba(255,255,255,0.05); color: ${color}; font-weight: 700;">${grade}</td>`;
+                        }).join('')}
+                    </tr>
+                `;
+            });
+
+            html += `</tbody>`;
+            table.innerHTML = html;
+        }
+
+        // Add a trigger to the Export button or a separate one
+        // Let's modify the export button to also trigger the view
+        const exportBtnOriginal = exportBroadsheetExcel;
+        window.exportBroadsheetExcel = function() {
+            exportBtnOriginal();
+            toggleBroadsheet(true);
+        };
+
+        function renderRemarks() {
+            const list = document.getElementById('parent-remarks-list');
+            const unreadDisplay = document.getElementById('unread-count');
+            const remarks = JSON.parse(localStorage.getItem('nammaGCE_ParentMessages') || '[]');
+            
+            if (remarks.length === 0) {
+                list.innerHTML = '<p style="color: #64748b; text-align: center; padding: 2rem;">No pending messages from parents. 🛡️</p>';
+                unreadDisplay.textContent = '0 New';
+                return;
+            }
+
+            unreadDisplay.textContent = `${remarks.length} Total`;
+            list.innerHTML = '';
+            
+            remarks.reverse().forEach((r, i) => {
+                const actualIndex = remarks.length - 1 - i;
+                list.innerHTML += `
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem;">
+                            <div>
+                                <h4 style="margin: 0; color: #f8fafc; font-size: 1rem;">${r.student} <span style="font-weight: 400; color: var(--text-secondary); font-size: 0.9rem;">(Roll: ${r.roll})</span></h4>
+                                <p style="margin: 0; font-size: 0.75rem; color: var(--accent-advisor); font-weight: 700;">Submitted: ${r.timestamp}</p>
+                            </div>
+                            <button onclick="dismissRemark(${actualIndex})" style="background: none; border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; padding: 0.3rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">Mark as Read</button>
+                        </div>
+                        <p style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 10px; margin: 0; font-size: 0.95rem; line-height: 1.6; color: #cbd5e1; border-left: 3px solid var(--accent-advisor);">${r.message}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function dismissRemark(index) {
+            let remarks = JSON.parse(localStorage.getItem('nammaGCE_ParentMessages') || '[]');
+            remarks.splice(index, 1);
+            localStorage.setItem('nammaGCE_ParentMessages', JSON.stringify(remarks));
+            renderRemarks();
+        }
+
+        // Tab Registration Logic
+        const tabManual = document.getElementById('tab-manual');
+        const tabExcel = document.getElementById('tab-excel');
+        const tabPdf = document.getElementById('tab-pdf');
+        const tabBroadcast = document.getElementById('tab-broadcast');
+
+        const formManual = document.getElementById('quick-enroll-form');
+        const formExcel = document.getElementById('excel-upload-form');
+        const formPdf = document.getElementById('pdf-upload-form');
+        const formBroadcast = document.getElementById('content-broadcast');
+
+        function switchTab(activeTab, activeForm) {
+            [tabManual, tabExcel, tabPdf, tabBroadcast].forEach(t => {
+                if (t) {
+                    t.style.color = 'var(--text-secondary)';
+                    t.style.borderBottomColor = 'transparent';
+                    t.style.fontWeight = '500';
+                }
+            });
+            [formManual, formExcel, formPdf, formBroadcast].forEach(f => {
+                if (f) f.style.display = 'none';
+            });
+
+            if (activeTab) {
+                activeTab.style.color = 'var(--accent-primary)';
+                activeTab.style.borderBottomColor = 'var(--accent-primary)';
+                activeTab.style.fontWeight = '600';
+            }
+            if (activeForm) activeForm.style.display = 'block';
+        }
+
+        if (tabManual) tabManual.addEventListener('click', () => switchTab(tabManual, formManual));
+        if (tabExcel) tabExcel.addEventListener('click', () => switchTab(tabExcel, formExcel));
+        if (tabPdf) tabPdf.addEventListener('click', () => switchTab(tabPdf, formPdf));
+        if (tabBroadcast) tabBroadcast.addEventListener('click', () => switchTab(tabBroadcast, formBroadcast));
+        tabExcel.addEventListener('click', () => switchTab(tabExcel, formExcel));
+        tabPdf.addEventListener('click', () => switchTab(tabPdf, formPdf));
+
+        // File Input Display Logic
+        const fileInput = document.getElementById('excel-file-input');
+        const fileDisplay = document.getElementById('file-name-display');
+
+        fileInput.addEventListener('change', function () {
+            if (this.files && this.files.length > 0) {
+                fileDisplay.textContent = this.files[0].name + ' selected!';
+                fileDisplay.style.display = 'block';
+                // Show content preview table
+                document.getElementById('excel-import-preview').style.display = 'block';
+            }
+        });
+
+        // Excel Upload Simulation
+        document.getElementById('excel-upload-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please select an Excel or CSV file before uploading.');
+                return;
+            }
+            const btn = document.getElementById('upload-btn');
+            const progressContainer = document.getElementById('import-progress-container');
+            const progressBar = document.getElementById('import-progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            const preview = document.getElementById('excel-import-preview');
+
+            const originalText = btn.textContent;
+            btn.style.display = 'none';
+            preview.style.display = 'none';
+            progressContainer.style.display = 'block';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 30) + 20;
+                
+                if (progress >= 100) {
+                    progress = 100;
+                    progressBar.style.width = '100%';
+                    progressPercent.textContent = '100%';
+                    clearInterval(interval);
+                    setTimeout(completeImport, 100); // Tiny pause at 100% for feedback
+                    return;
+                }
+                
+                progressBar.style.width = progress + '%';
+                progressPercent.textContent = progress + '%';
+            }, 50);
+
+            function completeImport() {
+                // EXPANDED CLASS ROSTER (46 STUDENTS TOTAL)
+                const mockStudents = [
+                    { fullName: "Abdulla A", regNo: "731124104001", rollNo: "24CSE01", email: "abdulla03072007@gmail.com" },
+                    { fullName: "K.Agashree", regNo: "731124104002", rollNo: "24cse02", email: "agashreekumaresan@gmail.com" },
+                    { fullName: "AJAY KUMAR S", regNo: "731124104003", rollNo: "24CSE03", email: "ajaykumar050306@gmail.com" },
+                    { fullName: "AJEESH C", regNo: "731124104004", rollNo: "24CSE04", email: "cajeesh106@gmail.com" },
+                    { fullName: "ANAND R", regNo: "731124104005", rollNo: "24CSE05", email: "anand.r@gmail.com" },
+                    { fullName: "ANITHA K", regNo: "731124104006", rollNo: "24CSE06", email: "anitha.k@gmail.com" },
+                    { fullName: "ANTONY S", regNo: "731124104007", rollNo: "24CSE07", email: "antony.s@gmail.com" },
+                    { fullName: "ARJUN S", regNo: "731124104008", rollNo: "24CSE08", email: "arjunsivakumar24@gmail.com" },
+                    { fullName: "BOJARAJAN B", regNo: "731124104009", rollNo: "24CSE09", email: "boja3450@gmail.com" },
+                    { fullName: "DEEPIGA V", regNo: "731124104010", rollNo: "24CSE10", email: "deepiga.uv@gmail.com" },
+                    { fullName: "DEEPTHI SREE P", regNo: "731124104011", rollNo: "24CSE11", email: "deepthisree2006@gmail.com" },
+                    { fullName: "DHARANIVENDHAN K", regNo: "731124104012", rollNo: "24CSE12", email: "dharanivendhan41@gmail.com" },
+                    { fullName: "DHARSHINI R P", regNo: "731124104013", rollNo: "24CSE13", email: "dharshinirp2509@gmail.com" },
+                    { fullName: "DINAKAR G", regNo: "731124104014", rollNo: "24CSE14", email: "dinakar9944g@gmail.com" },
+                    { fullName: "Gayathri V", regNo: "731124104015", rollNo: "24CSE15", email: "gayathrivelusamy22@gmail.com" },
+                    { fullName: "Hari prasath M", regNo: "731124104016", rollNo: "24cse16", email: "hariimahalingam@gmail.com" },
+                    { fullName: "Harimala S B", regNo: "731124104017", rollNo: "24CSE17", email: "harimala.sb@gmail.com" },
+                    { fullName: "Harini.V", regNo: "731124104018", rollNo: "24cse18", email: "velusamyharini2006@gmail.com" },
+                    { fullName: "Jebin raj.R", regNo: "731124104019", rollNo: "24cse19", email: "jebinj376@gmail.com" },
+                    { fullName: "M Jeevitha", regNo: "731124104020", rollNo: "24CSE20", email: "jeevithamurugesan567@gmail.com" },
+                    { fullName: "JHAYJANANI A", regNo: "731124104021", rollNo: "24CSE21", email: "jhayjanani007@gmail.com" },
+                    { fullName: "Jineeswari M", regNo: "731124104022", rollNo: "24CSE22", email: "jinusishira456@gmail.com" },
+                    { fullName: "Kanimozhi S", regNo: "731124104023", rollNo: "24cse23", email: "kanimozhisathiyaseelan21@gmail.com" },
+                    { fullName: "R.Kaviya", regNo: "731124104024", rollNo: "24CSE24", email: "kaviyakamali16@gmail.com" },
+                    { fullName: "KOWSALYA N", regNo: "731124104025", rollNo: "24cse25", email: "nkowsali15@gmail.com" },
+                    { fullName: "LOGESH W", regNo: "731124104026", rollNo: "24cse26", email: "logesh.w@gmail.com" },
+                    { fullName: "MADHUMITHA S", regNo: "731124104027", rollNo: "24cse27", email: "madhu.s@gmail.com" },
+                    { fullName: "MANIMEGALAI P", regNo: "731124104028", rollNo: "24cse28", email: "mani.p@gmail.com" },
+                    { fullName: "NANDHINI T", regNo: "731124104029", rollNo: "24cse29", email: "nandhini.t@gmail.com" },
+                    { fullName: "PAVITHRA G", regNo: "731124104030", rollNo: "24cse30", email: "pavithra.g@gmail.com" },
+                    { fullName: "RAJESH M", regNo: "731124104031", rollNo: "24cse31", email: "rajesh.m@gmail.com" },
+                    { fullName: "SANGEETHA R", regNo: "731124104032", rollNo: "24cse32", email: "sangee.r@gmail.com" },
+                    { fullName: "SELVA KUMAR K", regNo: "731124104033", rollNo: "24cse33", email: "selva.k@gmail.com" },
+                    { fullName: "SRIDHARAN P", regNo: "731124104046", rollNo: "24cse46", email: "p.sridharan111@gmail.com" }
+                ].map(s => ({ ...s, link: "#", date: new Date().toLocaleDateString() }));
+
+                const saved = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+                mockStudents.forEach(m => {
+                    if(!saved.some(s => s.regNo === m.regNo)) {
+                        saved.push(m);
+                    }
+                });
+                localStorage.setItem('studentEnrollments', JSON.stringify(saved));
+
+                // Sort for display (Ascending Roll No: 01, 02, 03...)
+                const sortedLocal = mockStudents.sort((a, b) => a.rollNo.localeCompare(b.rollNo, undefined, {numeric: true}));
+
+                sortedLocal.forEach(s => { 
+                    const newRow = document.createElement('tr');
+                    newRow.className = 'student-item';
+                    newRow.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+                    newRow.innerHTML = `
+                        <td style="padding: 1rem; font-family: monospace; color: white;">${s.regNo}</td>
+                        <td style="padding: 1rem; font-weight: 700; color: #10b981;">${s.rollNo}</td>
+                        <td style="padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                <div style="width: 32px; height: 32px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">${s.fullName.charAt(0)}</div>
+                                <div>
+                                    <div style="font-weight: 600;"><a href="student-profile.html?reg=${s.regNo}" style="color: white; text-decoration: none;">${s.fullName}</a></div>
+                                    ${s.link ? `<a href="${s.link}" target="_blank" style="font-size: 0.75rem; color: #10b981; text-decoration: underline;">Portfolio 🔗</a>` : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: 1rem; color: #94a3b8; font-size: 0.85rem;">${s.email}</td>
+                        <td style="padding: 1rem;">
+                            <a href="student-profile.html?reg=${s.regNo}" style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.2); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'">RECORD</a>
+                        </td>
+                    `;
+                    roster.appendChild(newRow);
+                });
+
+                // Update Counter
+                updateRosterCount();
+
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    btn.style.display = 'block';
+                    btn.innerHTML = `✅ Successfully Added All Students!`;
+                    btn.style.background = '#10b981';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                        fileDisplay.style.display = 'none';
+                        formExcel.reset();
+                    }, 1500);
+                }, 400); // Shorter delay after 100%
+            }
+        });
+
+        function updateRosterCount() {
+            const saved = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            const badge = document.getElementById('roster-count-badge');
+            if (badge) badge.textContent = `${saved.length} Students`;
+        }
+
+        const pdfInput = document.getElementById('pdf-file-input');
+        const pdfDisplay = document.getElementById('pdf-file-name-display');
+        const pdfDetails = document.getElementById('pdf-file-details');
+
+        pdfInput.addEventListener('change', function () {
+            if (this.files && this.files.length > 0) {
+                pdfDisplay.textContent = this.files[0].name + ' selected!';
+                pdfDetails.style.display = 'flex';
+            }
+        });
+
+        function clearSelectedPDF() {
+            pdfInput.value = '';
+            pdfDetails.style.display = 'none';
+        }
+
+        document.getElementById('pdf-upload-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!pdfInput.files || pdfInput.files.length === 0) {
+                alert('Please select a PDF document first.');
+                return;
+            }
+            const btn = document.getElementById('pdf-upload-btn');
+            const originalText = btn.textContent;
+
+            btn.innerHTML = '⚙️ Extracting data via OCR...';
+            btn.style.opacity = '0.8';
+
+            setTimeout(() => {
+                btn.innerHTML = '✅ Form Data Imported Successfully!';
+                btn.style.background = '#10b981'; // Success emerald
+
+                // Extract mock student from PDF
+                const newRecord = {
+                    fullName: "Alan Turing (PDF)",
+                    regNo: "21CS099",
+                    rollNo: "99",
+                    email: "alan.pdf@university.edu",
+                    date: new Date().toLocaleDateString()
+                };
+                const saved = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+                saved.push(newRecord);
+                localStorage.setItem('studentEnrollments', JSON.stringify(saved));
+
+                // SHOW AND ADD TO PDF-SPECIFIC SECTION
+                const pdfSection = document.getElementById('section-recent-pdf');
+                pdfSection.style.display = 'block';
+                pdfSection.style.animation = 'fadeIn 0.5s ease-out';
+
+                const roster = document.getElementById('pdf-student-roster');
+                const nameParts = newRecord.fullName.split(' ');
+                const initials = (nameParts[0].charAt(0) + (nameParts.length > 1 ? nameParts[1].charAt(0) : '')).toUpperCase();
+
+                const card = document.createElement('div');
+                card.className = 'student-item';
+                card.style.animation = 'slideIn 0.3s ease-out';
+                card.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="avatar" style="width: 45px; height: 45px; background: rgba(236, 72, 153, 0.15); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">${initials}</div>
+                            <div>
+                                <h4 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 0.1rem;">${newRecord.fullName}</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary);">Reg No: ${newRecord.regNo} | Roll No: ${newRecord.rollNo}</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.8rem; align-items: center;">
+                            <button class="view-all" style="background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.2); color: #ec4899; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s;" onclick="window.location.href='student-profile.html?reg=${newRecord.regNo}'">
+                                View Profile
+                            </button>
+                            <button onclick="removePDFRow(this, '${newRecord.regNo}')" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                `;
+                roster.prepend(card);
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)';
+                    btn.style.opacity = '1';
+                    clearSelectedPDF();
+                    formPdf.reset();
+                }, 3000);
+            }, 2500);
+        });
+
+        function removePDFRow(btnEl, regNo) {
+            if(confirm('Are you sure you want to delete this student record? This will remove them from the system.')) {
+                const item = btnEl.closest('.student-item');
+                item.style.opacity = '0';
+                item.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    item.remove();
+                    // Remove from localStorage
+                    let saved = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+                    saved = saved.filter(s => s.regNo !== regNo);
+                    localStorage.setItem('studentEnrollments', JSON.stringify(saved));
+                    
+                    // Update main roster UI if present
+                    const mainRosterRows = document.querySelectorAll('#student-roster tr');
+                    mainRosterRows.forEach(row => {
+                        if(row.textContent.includes(regNo)) row.remove();
+                    });
+                    
+                    updateRosterCount();
+                    
+                    // Hide section if empty
+                    const pdfRoster = document.getElementById('pdf-student-roster');
+                    if (pdfRoster.children.length === 0) {
+                        document.getElementById('section-recent-pdf').style.display = 'none';
+                    }
+                }, 300);
+            }
+        }
+
+        // Initialize sections if records already exist in storage
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+            
+            // 1. POPULATE MAIN ROSTER (TABLE ROWS)
+            const roster = document.getElementById('student-roster');
+            const manualOrExcelStudents = saved.filter(s => !s.fullName.includes('(PDF)'));
+            
+            if (manualOrExcelStudents.length > 0) {
+                const emptyMsg = document.getElementById('empty-roster-msg');
+                if (emptyMsg) emptyMsg.style.display = 'none';
+
+                // Sort Roster by Roll No (Ascending: 01, 02, 03...)
+                const sorted = manualOrExcelStudents.sort((a,b) => a.rollNo.localeCompare(b.rollNo, undefined, {numeric: true}));
+
+                sorted.forEach(s => {
+                    const newRow = document.createElement('tr');
+                    newRow.className = 'student-item';
+                    newRow.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+                    newRow.innerHTML = `
+                        <td style="padding: 1rem; font-family: monospace; color: white;">${s.regNo}</td>
+                        <td style="padding: 1rem; font-weight: 700; color: #10b981;">${s.rollNo}</td>
+                        <td style="padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                <div style="width: 32px; height: 32px; background: rgba(255, 255, 255, 0.05); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">${s.fullName.charAt(0)}</div>
+                                <div>
+                                    <div style="font-weight: 600;"><a href="student-profile.html?reg=${s.regNo}" style="color: white; text-decoration: none;">${s.fullName}</a></div>
+                                    ${s.link ? `<a href="${s.link}" target="_blank" style="font-size: 0.75rem; color: #10b981; text-decoration: underline;">Portfolio 🔗</a>` : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: 1rem; color: #94a3b8; font-size: 0.85rem;">${s.email}</td>
+                        <td style="padding: 1rem;">
+                            <a href="student-profile.html?reg=${s.regNo}" style="background: rgba(255, 255, 255, 0.05); color: #94a3b8; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.1); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">RECORD</a>
+                        </td>
+                    `;
+                    roster.appendChild(newRow);
+                });
+            }
+
+            // 2. POPULATE PDF SECTION
+            const pdfStudents = saved.filter(s => s.fullName.includes('(PDF)'));
+            if (pdfStudents.length > 0) {
+                const pdfSection = document.getElementById('section-recent-pdf');
+                pdfSection.style.display = 'block';
+                const pdfRoster = document.getElementById('pdf-student-roster');
+
+                pdfStudents.slice().reverse().forEach(s => {
+                    const nameParts = s.fullName.split(' ');
+                    const initials = (nameParts[0].charAt(0) + (nameParts.length > 1 ? nameParts[1].charAt(0) : '')).toUpperCase();
+                    const card = document.createElement('div');
+                    card.className = 'student-item';
+                    card.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div class="avatar" style="width: 40px; height: 40px; background: rgba(236, 72, 153, 0.15); color: #ec4899; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">${initials}</div>
+                                <div>
+                                    <h4 style="font-size: 0.95rem; color: var(--text-primary); margin-bottom: 0.1rem;">${s.fullName}</h4>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Reg No: ${s.regNo} | Roll No: ${s.rollNo}</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.8rem; align-items: center;">
+                                <button class="view-all" style="background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.2); color: #ec4899; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;" onclick="window.location.href='student-profile.html?reg=${s.regNo}'">
+                                    View Profile
+                                </button>
+                                <button onclick="removePDFRow(this, '${s.regNo}')" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    pdfRoster.appendChild(card);
+                });
+            }
+        });
+
+        // Existing Manual Form Logic
+        document.getElementById('quick-enroll-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('enroll-btn');
+            const fullName = document.getElementById('full-name').value.trim();
+            const regNo = document.getElementById('reg-no').value.trim().toUpperCase();
+            const rollNo = document.getElementById('roll-no').value.trim().toUpperCase();
+            const originalText = btn.textContent;
+
+            btn.innerHTML = '⚙️ Generating Portal Credentials...';
+            btn.style.opacity = '0.8';
+
+            // Simulate adding student to the list below
+            setTimeout(() => {
+                btn.innerHTML = '✅ Student Enrolled Successfully!';
+                btn.style.background = '#10b981'; // Success format
+
+                // SAVE TO LOCAL STORAGE FOR ENROLLMENTS PAGE
+                const newRecord = {
+                    fullName: fullName,
+                    regNo: regNo,
+                    rollNo: rollNo,
+                    email: document.getElementById('email').value,
+                    parentEmail: document.getElementById('parent-email').value,
+                    parentMobile: document.getElementById('parent-mobile').value,
+                    date: new Date().toLocaleDateString()
+                };
+                const saved = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+                saved.push(newRecord);
+                localStorage.setItem('studentEnrollments', JSON.stringify(saved));
+
+                // Add dynamically to the Recent Advisees List (Table Row)
+                const roster = document.getElementById('student-roster');
+                const emptyMsg = document.getElementById('empty-roster-msg');
+                if (emptyMsg) emptyMsg.style.display = 'none';
+
+                const newRow = document.createElement('tr');
+                newRow.className = 'student-item';
+                newRow.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+                newRow.innerHTML = `
+                    <td style="padding: 1rem; font-family: monospace; color: white;">${regNo}</td>
+                    <td style="padding: 1rem; font-weight: 700; color: #6366f1;">${rollNo}</td>
+                    <td style="padding: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.8rem;">
+                            <div style="width: 32px; height: 32px; background: rgba(99, 102, 241, 0.1); color: #818cf8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">${fullName.charAt(0)}</div>
+                            <div style="font-weight: 600;">${fullName}</div>
+                        </div>
+                    </td>
+                    <td style="padding: 1rem; color: #94a3b8; font-size: 0.85rem;">${document.getElementById('email').value || 'n/a'}</td>
+                    <td style="padding: 1rem;">
+                        <span style="background: rgba(99, 102, 241, 0.1); color: #818cf8; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; border: 1px solid rgba(99, 102, 241, 0.1);">MANUAL</span>
+                    </td>
+                `;
+
+                roster.prepend(newRow); // Put new row at the top
+                document.getElementById('quick-enroll-form').reset();
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.opacity = '1';
+                }, 2500);
+            }, 1200);
+        });
+        function downloadStudentTemplate() {
+            const headers = "REG NO,ROLL NO,NAME,EMAIL-id\n";
+            const csvContent = "data:text/csv;charset=utf-8," + headers +
+                "731124104001,24CSE01,Abdulla A,abdulla@gmail.com\n" +
+                "731124104003,24CSE03,AJAY KUMAR S,ajay@gmail.com";
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Student_Enrollment_Template.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function filterRoster() {
+            const query = document.getElementById('roster-search').value.toLowerCase();
+            const rows = document.querySelectorAll('#student-roster tr:not(#empty-roster-msg)');
+            let found = false;
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    row.style.display = 'table-row';
+                    found = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            const emptyMsg = document.getElementById('empty-roster-msg');
+            if (emptyMsg) emptyMsg.style.display = (found || rows.length === 0) ? 'none' : 'table-row';
+            if (!found && rows.length > 0) {
+                emptyMsg.innerHTML = `<td colspan="5" style="text-align: center; padding: 2rem; color: #94a3b8;">🔍 No matching students found for "${query}"</td>`;
+                emptyMsg.style.display = 'table-row';
+            }
+        }
+        function sendGlobalBroadcast() {
+            const msg = document.getElementById('broadcast-msg-text').value.trim();
+            const btn = document.getElementById('broadcast-btn');
+            const progress = document.getElementById('broadcast-progress-container');
+            const bar = document.getElementById('broadcast-progress-bar');
+            const percent = document.getElementById('broadcast-percent-text');
+            const status = document.getElementById('broadcast-status-text');
+
+            if (!msg) {
+                alert('⚠️ Please enter a message for the broadcast.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            progress.style.display = 'block';
+            
+            let p = 0;
+            const interval = setInterval(() => {
+                p += Math.floor(Math.random() * 5) + 2;
+                if (p >= 100) {
+                    p = 100;
+                    clearInterval(interval);
+                    
+                    // SAVE MESSAGE TO EVERY STUDENT'S INBOX
+                    const students = JSON.parse(localStorage.getItem('studentEnrollments') || '[]');
+                    const allMessages = JSON.parse(localStorage.getItem('nammaGCE_AdvisorMessages') || '[]');
+                    
+                    students.forEach(s => {
+                        allMessages.push({
+                            from: 'Advisor - Official Broadcast',
+                            text: msg,
+                            timestamp: new Date().toLocaleString(),
+                            regNo: s.regNo,
+                            unread: true,
+                            isBroadcast: true
+                        });
+                    });
+                    
+                    localStorage.setItem('nammaGCE_AdvisorMessages', JSON.stringify(allMessages));
+                    
+                    status.textContent = `✅ Successfully sent to ${students.length} students!`;
+                    btn.textContent = '✅ Broadcast Complete';
+                    btn.style.background = '#10b981';
+                    
+                    setTimeout(() => {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.textContent = '🚀 Send Message to All Students';
+                        btn.style.background = 'linear-gradient(135deg, #6366f1, #4f46e5)';
+                        document.getElementById('broadcast-msg-text').value = '';
+                        progress.style.display = 'none';
+                    }, 3000);
+                }
+                bar.style.width = p + '%';
+                percent.textContent = p + '%';
+                if (p > 30) status.textContent = '📤 Encrypting transmission lines...';
+                if (p > 60) status.textContent = '📡 Delivering to Student Portals...';
+                if (p > 90) status.textContent = '✨ Confirming delivery receipts...';
+            }, 100);
+        }
+        function openSettings() {
+            document.getElementById('settings-modal').style.display = 'flex';
+            document.getElementById('set-public-key').value = localStorage.getItem('emailjs_public_key') || '';
+            document.getElementById('set-service-id').value = localStorage.getItem('emailjs_service_id') || '';
+            document.getElementById('set-template-id').value = localStorage.getItem('emailjs_template_id') || '';
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').style.display = 'none';
+        }
+
+        function saveSettings() {
+            localStorage.setItem('emailjs_public_key', document.getElementById('set-public-key').value);
+            localStorage.setItem('emailjs_service_id', document.getElementById('set-service-id').value);
+            localStorage.setItem('emailjs_template_id', document.getElementById('set-template-id').value);
+            alert('✅ Communication settings saved successfully!');
+            closeSettings();
+        }
+    </script>
+    <!-- Settings Modal (EmailJS Config) -->
+    <div id="settings-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; backdrop-filter: blur(8px); justify-content: center; align-items: center;">
+        <div style="max-width: 450px; width: 90%; background: #0f172a; border: 1px solid #6366f1; padding: 2.5rem; border-radius: 20px; box-shadow: 0 0 50px rgba(99, 102, 241, 0.2);">
+            <h2 style="color: white; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.8rem;">⚙️ Communication Config</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5;">Connect your EmailJS account to send direct messages to students without opening any apps.</p>
+            
+            <div style="margin-bottom: 1.2rem;">
+                <label style="display:block; color: #818cf8; font-size: 0.75rem; margin-bottom: 0.4rem; font-weight: 600; text-transform: uppercase;">Public Key</label>
+                <input id="set-public-key" type="text" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1rem; border-radius: 10px; color: white;" placeholder="e.g. user_abcdef123">
+            </div>
+            <div style="margin-bottom: 1.2rem;">
+                <label style="display:block; color: #818cf8; font-size: 0.75rem; margin-bottom: 0.4rem; font-weight: 600; text-transform: uppercase;">Service ID</label>
+                <input id="set-service-id" type="text" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1rem; border-radius: 10px; color: white;" placeholder="e.g. service_xxxx">
+            </div>
+            <div style="margin-bottom: 2rem;">
+                <label style="display:block; color: #818cf8; font-size: 0.75rem; margin-bottom: 0.4rem; font-weight: 600; text-transform: uppercase;">Template ID</label>
+                <input id="set-template-id" type="text" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 1rem; border-radius: 10px; color: white;" placeholder="e.g. template_xxxx">
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="closeSettings()" style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: white; cursor: pointer;">Cancel</button>
+                <button onclick="saveSettings()" style="flex: 2; padding: 0.8rem; border-radius: 8px; border: none; background: #6366f1; color: white; font-weight: 700; cursor: pointer;">🚀 Save Configuration</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff Profile Modal -->
+    <div id="profile-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+        <div style="background: rgba(30, 41, 59, 1); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 420px; padding: 2.5rem 2rem; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            <button onclick="document.getElementById('profile-modal').style.display='none'" style="position: absolute; right: 20px; top: 15px; background: none; border: none; color: #94a3b8; font-size: 1.8rem; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'">&times;</button>
+            <div style="text-align: center;">
+                <div id="modal-img" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent-primary); margin: 0 auto; overflow: hidden; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);"></div>
+                <h2 id="modal-name" style="margin-top: 1.2rem; margin-bottom: 0.3rem; font-size: 1.5rem; color: white;">Name</h2>
+                <p id="modal-role" style="color: var(--accent-primary); font-size: 0.95rem; margin-bottom: 1.5rem; font-weight: 600;">Role</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 1.2rem; border-radius: 12px; font-size: 0.9rem; display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; gap: 0.5rem;"><div style="color: #94a3b8; width: 110px;">🎓 Qualification:</div> <div id="modal-qual" style="color: white; font-weight: 500; flex:1;">...</div></div>
+                <div style="display: flex; gap: 0.5rem;"><div style="color: #94a3b8; width: 110px;">⏳ Experience:</div> <div id="modal-exp" style="color: white; font-weight: 500; flex:1;">...</div></div>
+                <div style="display: flex; gap: 0.5rem;"><div style="color: #94a3b8; width: 110px;">🔬 Specialization:</div> <div id="modal-spec" style="color: white; font-weight: 500; flex:1; line-height: 1.4;">...</div></div>
+                <div style="display: flex; gap: 0.5rem;"><div style="color: #94a3b8; width: 110px;">📞 Contact:</div> <div id="modal-phone" style="color: white; font-weight: 500; flex:1;">...</div></div>
+            </div>
+            <p style="text-align: center; color: #64748b; font-size: 0.75rem; margin-top: 1.5rem; margin-bottom: 0;">Verified via GCE Erode Faculty Portal</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem('currentUser') || 'Thenmozhi';
+            if(userName === 'Thenmozhi') {
+                const advisorDetail = {
+                    name: 'Dr. D. S. Thenmozhi',
+                    role: 'Assistant Professor(SR), Dept. Of CSE',
+                    img: 'https://www.gcee.ac.in/include/ajax/mca/assistant_professor3.jpg',
+                    qual: 'M.E, Ph.D',
+                    exp: '18+ Years',
+                    spec: 'Computer Applications & Computer Science',
+                    phone: '+91-98429 81158'
+                };
+                
+                document.getElementById('advisor-name').textContent = advisorDetail.name;
+                document.getElementById('advisor-role').textContent = advisorDetail.role;
+                
+                const avatarEl = document.getElementById('advisor-avatar');
+                avatarEl.innerHTML = `<img src="${advisorDetail.img}" style="width: 100%; height: 100%; object-fit: cover;" alt="Profile Picture"/>`;
+                avatarEl.style.background = 'transparent';
+                avatarEl.style.border = '2px solid var(--accent-primary)';
+
+                const profileBtn = document.getElementById('advisor-profile-btn');
+                profileBtn.style.cursor = 'pointer';
+                profileBtn.title = 'Click to view full profile details';
+                profileBtn.addEventListener('click', () => {
+                    document.getElementById('modal-img').innerHTML = `<img src="${advisorDetail.img}" style="width:100%; height:100%; object-fit:cover;">`;
+                    document.getElementById('modal-name').textContent = advisorDetail.name;
+                    document.getElementById('modal-role').textContent = advisorDetail.role;
+                    document.getElementById('modal-qual').textContent = advisorDetail.qual;
+                    document.getElementById('modal-exp').textContent = advisorDetail.exp;
+                    document.getElementById('modal-spec').textContent = advisorDetail.spec;
+                    document.getElementById('modal-phone').textContent = advisorDetail.phone;
+                    document.getElementById('profile-modal').style.display = 'flex';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
